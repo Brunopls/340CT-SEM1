@@ -10,7 +10,7 @@ echo "PREPARE-COMMIT-MSG"
 PROTECTED_BRANCH="master"
 
 # Remote
-REMOTE=""
+REMOTE="origin"
 
 # Check for merges
 if [[ $2 != 'merge' ]]; then
