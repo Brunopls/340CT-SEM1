@@ -10,8 +10,13 @@ class Accounts {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
-			const sql = 'CREATE TABLE IF NOT EXISTS users\
-				(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, email TEXT);'
+			const sql =
+        'CREATE TABLE IF NOT EXISTS users\
+				(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, email TEXT, roleID INTEGER, \
+        CONSTRAINT fk_roleid \
+        FOREIGN KEY (roleID) \
+        REFERENCES roles(id) \
+        );'
 			await this.db.run(sql)
 			return this
 		})()
@@ -21,12 +26,13 @@ class Accounts {
 	 * registers a new user
 	 * @param {String} user the chosen username
 	 * @param {String} pass the chosen password
-	 * @returns {Boolean} returns true if the new user has been added
+	 * @returns {Boolean} returns true if the new user has been added.
 	 */
 	async register(user, pass, email) {
 		Array.from(arguments).forEach( val => {
 			if(val.length === 0) throw new Error('missing field')
 		})
+		const defaultRoleId = 4
 		let sql = `SELECT COUNT(id) as records FROM users WHERE user="${user}";`
 		const data = await this.db.get(sql)
 		if(data.records !== 0) throw new Error(`username "${user}" already in use`)
@@ -34,7 +40,7 @@ class Accounts {
 		const emails = await this.db.get(sql)
 		if(emails.records !== 0) throw new Error(`email address "${email}" is already in use`)
 		pass = await bcrypt.hash(pass, saltRounds)
-		sql = `INSERT INTO users(user, pass, email) VALUES("${user}", "${pass}", "${email}")`
+		sql = `INSERT INTO users(user, pass, email, roleID) VALUES("${user}", "${pass}", "${email}", ${defaultRoleId})`
 		await this.db.run(sql)
 		return true
 	}
@@ -56,6 +62,20 @@ class Accounts {
 		return true
 	}
 
+	/**
+	 * gets user's role ID
+	 * @param {String} username the username to check
+	 * @returns {Integer} returns roleID if credentials are valid
+	 */
+	async getRoleID(username) {
+		let sql = `SELECT count(id) AS count FROM users WHERE user="${username}";`
+		const record = await this.db.get(sql)
+		if(!record.count) throw new Error(`username "${username}" not found`)
+		sql = `SELECT roleID FROM users WHERE user = "${username}";`
+		const row = await this.db.get(sql)
+		return row.roleID
+	}
+  
 	async close() {
 		await this.db.close()
 	}
