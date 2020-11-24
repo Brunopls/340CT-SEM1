@@ -75,7 +75,7 @@ class Accounts {
 		const row = await this.db.get(sql)
 		return row.roleID
 	}
-  
+
 	async close() {
 		await this.db.close()
 	}
