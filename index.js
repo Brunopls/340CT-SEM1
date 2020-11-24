@@ -20,7 +20,7 @@ app.use( async(ctx, next) => {
 	console.log(`${ctx.method} ${ctx.path}`)
 	ctx.hbs = {
 		authorised: ctx.session.authorised,
-    role: ctx.session.role,
+		role: ctx.session.role,
 		host: `https://${ctx.host}`
 	}
 	for(const key in ctx.query) ctx.hbs[key] = ctx.query[key]
