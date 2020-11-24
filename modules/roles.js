@@ -13,20 +13,20 @@ class Roles {
 	}
 
 	/**
-	 * return records from 'roles' table.
+	 * gets all records in the 'roles' table.
 	 * @returns {Object} returns object if records exist in table.
 	 */
 	async getRoles() {
 		const sql = 'SELECT * FROM roles;'
-		const data = await this.db.get(sql)
-		if(data !== 0) return data
+		const data = await this.db.all(sql)
+		if(data !== undefined) return data
 		else throw new Error('No records found in \'roles\'.\'')
 	}
 
 	/**
-	 * return a record from the 'roles' table.
+	 * gets a single record from the 'roles' table with matching role ID.
 	 * @param {Integer} the role ID.
-	 * * @returns {Object} returns object if records exist in table.
+	 * @returns {Object} returns object if records exist in table.
 	 */
 	async getRole(id) {
 		const sql = `SELECT * FROM roles WHERE id = ${id};`

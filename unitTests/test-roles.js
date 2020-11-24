@@ -3,7 +3,7 @@ import { Roles } from '../modules/roles.js'
 
 test('ROLES : error if invalid role ID', async test => {
 	test.plan(1)
-	const role = await new Roles('website.db')
+	const role = await new Roles('test-website.db')
 	try {
 		await role.getRole(99)
 		test.fail('error not thrown')
