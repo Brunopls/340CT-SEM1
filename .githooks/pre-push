@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
 
 echo
 echo "PRE-PUSH"
@@ -16,3 +18,12 @@ then
     fi
     exit 1 # push will not execute
 fi
+
+echo
+echo "==== GENERATING JS DOCS ===="
+
+npm run jsdoc
+
+echo
+echo "||||||||||||||||||||||||||||"
+

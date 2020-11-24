@@ -19,6 +19,7 @@
 		"start": "node index.js",
 		"jsdoc": "node_modules/.bin/jsdoc -c jsdoc.conf",
 		"linter": "node_modules/.bin/eslint .",
+    "linterfix": "node_modules/.bin/eslint . --fix",
 		"test": "ava"
 	},
 	"author": "",
@@ -43,7 +44,7 @@
 		"eslint": "^7.8.1",
 		"esm": "^3.2.25",
 		"jscpd": "^3.3.19",
-		"jsdoc": "^3.6.5",
+		"jsdoc": "^3.6.6",
 		"jsdoc-route-plugin": "^0.1.0"
 	}
 }

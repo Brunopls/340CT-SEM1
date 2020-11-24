@@ -1,11 +1,13 @@
 
 import Router from 'koa-router'
 import bodyParser from 'koa-body'
+import { Helpers } from '../helpers/helpers.js'
 
 const publicRouter = new Router()
 publicRouter.use(bodyParser({multipart: true}))
 
 import { Accounts } from '../modules/accounts.js'
+import { Roles } from '../modules/roles.js'
 const dbName = 'website.db'
 
 /**
@@ -21,7 +23,6 @@ publicRouter.get('/', async ctx => {
 		await ctx.render('error', ctx.hbs)
 	}
 })
-
 
 /**
  * The user registration page.
@@ -55,6 +56,12 @@ publicRouter.post('/register', async ctx => {
 
 publicRouter.get('/postregister', async ctx => await ctx.render('validate'))
 
+/**
+ * The script to validate user login input.
+ *
+ * @name Login Validation Script
+ * @route {GET} /validate/:user/:token
+ */
 publicRouter.get('/validate/:user/:token', async ctx => {
 	try {
 		console.log('VALIDATE')
@@ -73,18 +80,39 @@ publicRouter.get('/validate/:user/:token', async ctx => {
 	}
 })
 
+/**
+ * The login page script.
+ *
+ * @name Login Page
+ * @route {GET} /login
+ */
 publicRouter.get('/login', async ctx => {
 	console.log(ctx.hbs)
 	await ctx.render('login', ctx.hbs)
 })
 
+/**
+ * The login endpoint.
+ *
+ * @name Login Endpoint
+ * @route {POST} /login
+ */
 publicRouter.post('/login', async ctx => {
 	const account = await new Accounts(dbName)
+	const role = await new Roles(dbName)
 	ctx.hbs.body = ctx.request.body
 	try {
 		const body = ctx.request.body
 		await account.login(body.user, body.pass)
 		ctx.session.authorised = true
+
+		//Getting a user's role and registering it for role-based access control purposes
+		const roleId = await account.getRoleID(body.user)
+		ctx.session.role = await role.getRole(roleId)
+
+		//Registering current time in milliseconds so I can later calculate how long someone's worked
+		ctx.session.loginTime = Date.now()
+
 		const referrer = body.referrer || '/secure'
 		return ctx.redirect(`${referrer}?msg=you are now logged in...`)
 	} catch(err) {
@@ -95,9 +123,19 @@ publicRouter.post('/login', async ctx => {
 	}
 })
 
+/**
+ * The logout script.
+ *
+ * @name Logout Script
+ * @route {GET} /logout
+ */
 publicRouter.get('/logout', async ctx => {
+	const helper = new Helpers()
+	const hoursClocked = await helper.getHoursWorked(ctx.hbs.loginTime)
 	ctx.session.authorised = null
-	ctx.redirect('/?msg=you are now logged out')
+	ctx.session.role = null
+	ctx.session.loginTime = null
+	ctx.redirect(`/?msg=you are now logged out. You worked ${hoursClocked} hours today.`)
 })
 
 export { publicRouter }
