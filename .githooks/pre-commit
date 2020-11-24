@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e # using the options command to abort script at first error
 echo
@@ -42,6 +42,23 @@ if [ "$branch" = "master" ]; then
 	fi
 	exit 1 # commit will not execute
 fi
+
+echo
+echo "====== RUNNING LINTER ======"
+npm run linterfix
+
+echo
+echo "||||||||||||||||||||||||||||"
+echo
+
+echo
+echo "==== RUNNING UNIT TESTS ===="
+
+npm test
+
+echo
+echo "||||||||||||||||||||||||||||"
+
 
 # is the current branch a direct child of the master branch?
 # echo "checking parent branch"
