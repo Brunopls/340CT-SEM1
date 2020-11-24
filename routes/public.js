@@ -105,14 +105,14 @@ publicRouter.post('/login', async ctx => {
 		const body = ctx.request.body
 		await account.login(body.user, body.pass)
 		ctx.session.authorised = true
-		
-    //Getting a user's role and registering it for role-based access control purposes
-    const roleId = await account.getRoleID(body.user)
+
+		//Getting a user's role and registering it for role-based access control purposes
+		const roleId = await account.getRoleID(body.user)
 		ctx.session.role = await role.getRole(roleId)
-    
-    //Registering current time in milliseconds so I can later calculate how long someone's worked
-    ctx.session.loginTime = Date.now()
-    
+
+		//Registering current time in milliseconds so I can later calculate how long someone's worked
+		ctx.session.loginTime = Date.now()
+
 		const referrer = body.referrer || '/secure'
 		return ctx.redirect(`${referrer}?msg=you are now logged in...`)
 	} catch(err) {
@@ -130,11 +130,11 @@ publicRouter.post('/login', async ctx => {
  * @route {GET} /logout
  */
 publicRouter.get('/logout', async ctx => {
-  const helper = new Helpers()
-  const hoursClocked = await helper.getHoursWorked(ctx.hbs.loginTime)
+	const helper = new Helpers()
+	const hoursClocked = await helper.getHoursWorked(ctx.hbs.loginTime)
 	ctx.session.authorised = null
-  ctx.session.role = null
-  ctx.session.loginTime = null
+	ctx.session.role = null
+	ctx.session.loginTime = null
 	ctx.redirect(`/?msg=you are now logged out. You worked ${hoursClocked} hours today.`)
 })
 
