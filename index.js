@@ -20,6 +20,7 @@ app.use( async(ctx, next) => {
 	console.log(`${ctx.method} ${ctx.path}`)
 	ctx.hbs = {
 		authorised: ctx.session.authorised,
+		loginTime: ctx.session.loginTime,
 		role: ctx.session.role,
 		host: `https://${ctx.host}`
 	}
