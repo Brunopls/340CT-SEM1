@@ -1,15 +1,18 @@
-
 import Router from 'koa-router'
-
 import { Roles } from '../modules/roles.js'
+import { Helpers } from '../helpers/helpers.js'
 const dbName = 'website.db'
 
 const secureRouter = new Router({ prefix: '/secure' })
 
 secureRouter.get('/', async ctx => {
 	try {
-		console.log(ctx.hbs)
 		if(ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
+		const helper = new Helpers()
+
+		//Calculating how many hours the current user has worked so far
+		ctx.hbs.hoursWorked = await helper.getHoursWorked(ctx.hbs.loginTime)
+
 		await ctx.render('secure', ctx.hbs)
 	} catch(err) {
 		ctx.hbs.error = err.message
@@ -25,7 +28,7 @@ secureRouter.get('/', async ctx => {
  */
 secureRouter.get('/roles', async ctx => {
 	if(ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
-	if(ctx.session.role.name !== 'admin') return ctx.redirect('/secure?msg=not an admin')
+	if(ctx.hbs.role.name !== 'admin') return ctx.redirect('/secure?msg=not an admin')
 
 	const roles = await new Roles(dbName)
 	try {

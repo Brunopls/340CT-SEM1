@@ -19,6 +19,20 @@ header {
 	height: 8vw;
 }
 
+footer {
+	background-color: #ccc;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+	border-top: 5px solid grey;
+	height: 4vw;
+}
+
+footer > p {
+  margin-left:20px;
+}
+ 
 h1, h2, h3 {
 	margin: 0;
 	padding: 0;
