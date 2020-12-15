@@ -11,12 +11,18 @@
 <body>
     <header>
         <h1>Orders</h1>
+		<a href="/logout">Log out</a>
+		<a href="/secure/">Home</a>
     </header>
 
     {{#if msg}}
     <p class="msg-success">{{msg}}</p>
     {{/if}}
-
+{{#ifCond role "waiting"}}
+<div class="container">
+        <p><a href="/secure/orders/create">Add Order</a></p>
+        </div>
+    {{/ifCond}}
     <ul class="order_list">
         {{#each orders}}
         <div class="card">
@@ -28,20 +34,23 @@
                 <p>Time Placed: {{this.time}}</p>
                 <p>Total Price: {{this.totalPrice}}</p>
                 {{#ifCond ../role "kitchen"}}
-                <form action="/secure/orders/{{this.orderID}}" method="post">
+                <form action="/secure/orders/{{../this.orderID}}" method="post">
                     <button class="mark_prepared" type="submit" formmethod="post">Mark as 'Prepared'</button>
                 </form>
                 {{/ifCond}}
+
+                {{#ifCond ../role "waiting"}}
+                <form action="/secure/orders/{{../this.orderID}}" method="get">
+                    <button class="view_order" type="submit" formmethod="get">View Order</button>
+                </form>
+                {{/ifCond}}
+
             </div>
         </div>
         {{/each}}
     </ul>
 
-    {{#ifCond ../role "waiting"}}
-    <main>
-        <p><a href="/secure/orders/create">Add Order</a></p>
-    </main>
-    {{/ifCond}}
+    
 </body>
 
 </html>

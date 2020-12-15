@@ -1,33 +1,74 @@
-
 <!doctype html>
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Add an Order</title>
-		<meta name="description" content="form to add a new order">
-		<meta name="author" content="Bruno Correia">
-		<link href="{{host}}/style.css" type="text/css" rel="stylesheet" />
-	</head>
-	<body>
-		<header>
+
+<head>
+	<meta charset="utf-8">
+	<title>Add an Order</title>
+	<meta name="description" content="form to add a new order">
+	<meta name="author" content="Bruno Correia">
+	<link href="{{host}}/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+	<header>
 		<h1>Add an Order</h1>
 		<a href="/secure/orders">Order List</a>
-		</header>
-		<main>
-
-		<form action="/orders/create" enctype="multipart/form-data" method="post">
+	</header>
+	<div class="container">
+		<form action="/secure/orders/create" enctype="multipart/form-data" method="post">
 			<p>
 				<label for="tableNumber">Table Number</label><br />
 				<input type="number" name="tableNumber" placeholder="the table number" value="{{body.tableNumber}}">
 			</p>
+
 			<p>
 				<label for="numDiners">Number of Diners</label><br />
 				<input type="number" name="numDiners" placeholder="the number of diners" value="{{body.numDiners}}">
 			</p>
 
-			<p><input type="submit" value="Create"></p>
+			<p>
+				<label for="orderChoices">Order Choices</label><br />
+				<select multiple name="choices" id="choices" value="{{body.orderChoices}}"></select>
+				{{!-- <input type="hidden" id="choices" name="orderChoices" value="{{body.orderChoices}}"> --}}
+			</p>
+
+			<p>
+			</p>
+
+				<input type="submit" value="Create">
 		</form>
-		</main>
-	</body>
+	</div>
+	<br />
+	<div class="grid-container">
+		{{#each mainDishes}}
+		<button style="border:none;cursor:pointer;padding:0;" onclick="addChoice({{json this}})">
+			<div class="grid-item">
+				<div class="card">
+					<div class="container" style="background-color: rgb(232,232,232);">
+						<img src={{this.photo}} width="50" height="50" style="border-radius: 70%;">
+						<p>{{this.name}}</p>
+						<p>£{{this.price}}</p>
+					</div>
+				</div>
+			</div>
+		</button>
+		{{/each}}
+	</div>
+
+</body>
+
 </html>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+	integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	function addChoice(dish) {
+		$("#choices").append(`<option value="${dish.mainDishID}" selected>${dish.name}</option>`)
+	}
+
+	function removeChoice() {
+
+	}
+</script>

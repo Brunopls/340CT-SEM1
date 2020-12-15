@@ -13,7 +13,12 @@ const port = process.env.PORT || defaultPort
 
 app.use(serve('public'))
 app.use(session(app))
-app.use(views('views', { map: { handlebars: 'handlebars' }, extension: 'handlebars' , options: { helpers: { ifCond: (v1, v2, options) => {if(v1 === v2) {return options.fn(this)} return options.inverse(this) }}}}));
+app.use(views('views', { map: { handlebars: 'handlebars' }, extension: 'handlebars' , options: { helpers: { ifCond: (v1, v2, options) => {
+	if(v1 === v2) {
+		return options.fn(this)
+	} return options.inverse(this)
+},
+json: (value) => JSON.stringify(value)}}}))
 
 app.use( async(ctx, next) => {
 	console.log(`${ctx.method} ${ctx.path}`)

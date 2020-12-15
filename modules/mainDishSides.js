@@ -27,8 +27,8 @@ class MainDishSides {
 	 * @param {Integer} id order ID.
 	 * @returns {Object} returns object if records exist in table.
 	 */
-	async getOrderChoice(id) {
-		const sql = `SELECT * FROM mainDishSides WHERE orderID = ${id};`
+	async getMainDishSides(id) {
+		const sql = `SELECT * FROM mainDishSides WHERE mainDishID = ${id};`
 		const data = await this.db.all(sql)
 		if(data !== undefined) return data
 		else throw new Error('No matching id')

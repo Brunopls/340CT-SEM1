@@ -52,10 +52,14 @@ class Orders {
 	 * @returns {Object} returns new Orders object.
 	 */
 	async addOrder(body) {
+		try{
 		const sql = `INSERT INTO orders (tableNumber, numDiners, statusCode, time, totalPrice, totalIngredientsCost)\
 					 VALUES(${body.tableNumber}, ${body.numDiners}, ${body.statusCode}, '${body.time}', ${body.totalPrice}, ${body.totalIngredientsCost});`
-		await this.db.run(sql)
-		return true
+		
+		return await this.db.run(sql)}
+		catch(err){
+			console.log(err);
+		}
 	}
 
 	/**

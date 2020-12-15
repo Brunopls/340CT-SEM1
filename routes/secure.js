@@ -3,6 +3,9 @@ import { Roles } from '../modules/roles.js'
 import { StatusCodes } from '../modules/statusCodes.js'
 import { Helpers } from '../helpers/helpers.js'
 import { Orders } from '../modules/orders.js'
+import { OrderChoices } from '../modules/orderChoices.js'
+import { MainDishes } from '../modules/mainDishes.js'
+import { SideDishes } from '../modules/sideDishes.js'
 const dbName = 'website.db'
 
 const secureRouter = new Router({ prefix: '/secure' })
@@ -54,6 +57,7 @@ secureRouter.get('/roles', async ctx => {
 secureRouter.get('/orders', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
+	console.log(ctx.hbs.role)
 	try {
 		const rows = await orders.getOrders()
 		ctx.hbs.orders = rows
@@ -73,6 +77,13 @@ secureRouter.get('/orders', async ctx => {
  * @route {GET} /orders/create
  */
 secureRouter.get('/orders/create', async ctx => {
+	const mainDishes = await new MainDishes(dbName)
+	const sideDishes = await new SideDishes(dbName)
+
+	ctx.hbs.mainDishes = await mainDishes.getMainDishes();
+	ctx.hbs.sideDishes = await sideDishes.getSideDishes();
+	// ctx.hbs.mainDishSides = mainDishSides;
+	
 	await ctx.render('orders-create', ctx.hbs)
 })
 
@@ -85,10 +96,74 @@ secureRouter.get('/orders/create', async ctx => {
 secureRouter.post('/orders/create', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
+	const mainDishes = await new MainDishes(dbName)
+	const orderChoices = await new OrderChoices(dbName)
+	const statusCodes = await new StatusCodes(dbName)
+
 	try {
 		const { body } = ctx.request
-		await orders.addOrder(body)
+
+		let totalPrice = 0; 
+		let totalIngredientsCost = 0;
+		
+		for (let choice = 0; choice < body.choices.length; choice++){
+			const dish = await mainDishes.getMainDish(body.choices[choice])
+			totalPrice = totalPrice + dish.price;
+			totalIngredientsCost = totalIngredientsCost + dish.ingredientsCost;
+		}
+		
+		const statusCode = await statusCodes.getStatusCodeByName('placed')
+		let date = new Date();
+
+		const newOrder = {
+			tableNumber: parseInt(body.tableNumber),
+			numDiners: parseInt(body.numDiners),
+			statusCode: statusCode.id,
+			time: date.toLocaleString(),
+			totalPrice: totalPrice,
+			totalIngredientsCost: totalIngredientsCost,
+		}
+
+		const order = await orders.addOrder(newOrder)
+
+		for (let choice = 0; choice < body.choices.length; choice++){
+			const dish = await mainDishes.getMainDish(body.choices[choice])
+			const newOrderChoice = {
+				mainDishID: dish.mainDishID,
+				orderID: order.lastID,
+				quantity: 1,
+				price: totalPrice,
+				ingredientsCost: totalIngredientsCost
+			}
+
+			await orderChoices.addMainDishChoice(newOrderChoice);
+		}
+		
 		await ctx.redirect('/secure/orders?msg=order successfully created')
+	} catch (err) {
+		console.log(err.message)
+		ctx.hbs.error = err.message
+		await ctx.render('error', ctx.hbs)
+	} finally {
+		orders.close()
+	}
+})
+
+/**
+ * The script to update an order.
+ *
+ * @name Post Order Updating Script
+ * @route {POST} /orders/:id
+ */
+secureRouter.post('/orders/:id([0-9])', async ctx => {
+	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
+	const orders = await new Orders(dbName)
+	const statusCodes = await new StatusCodes(dbName)
+	const { id } = ctx.params
+	try {
+		const statusCode = await statusCodes.getStatusCodeByName('prepared')
+		await orders.updateStatus(id, statusCode.id)
+		await ctx.redirect('/secure/orders?msg=order status successfully updated')
 	} catch (err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
@@ -98,20 +173,21 @@ secureRouter.post('/orders/create', async ctx => {
 })
 
 /**
- * The script to add a new order.
+ * The script to view an order.
  *
- * @name Post Order Creation Script
- * @route {POST} /orders
+ * @name Post Order Viewing Script
+ * @route {GET} /orders/:id
  */
-secureRouter.post('/orders/:id([0-9])', async ctx => {
+secureRouter.get('/orders/:id([0-9])', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
+
 	const orders = await new Orders(dbName)
-	const statusCodes = await new StatusCodes(dbName);
-	const { id } = ctx.params;
+	const { id } = ctx.params
 	try {
-		const statusCode = await statusCodes.getStatusCodeByName("prepared")
-		await orders.updateStatus(id, statusCode.id)
-		await ctx.redirect('/secure/orders?msg=order status successfully updated')
+		const order = await orders.getOrder(id);
+		console.log(order)
+		ctx.hbs.body = order;
+		await ctx.render('order', ctx.hbs)
 	} catch (err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)

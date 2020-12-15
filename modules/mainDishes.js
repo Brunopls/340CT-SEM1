@@ -4,14 +4,13 @@ class MainDishes {
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
-			// we need this table to store the user accounts
 			const sql =
             'CREATE TABLE IF NOT EXISTS mainDishes\
                 (mainDishID INTEGER PRIMARY KEY AUTOINCREMENT, \
                     name TEXT, \
                     photo TEXT, \
                     price REAL, \
-                    ingredientsCost REAL, \
+                    ingredientsCost REAL \
                     );'
 			await this.db.run(sql)
 			return this
@@ -39,6 +38,22 @@ class MainDishes {
 		const data = await this.db.get(sql)
 		if(data !== undefined) return data
 		else throw new Error('No matching id')
+	}
+
+	/**
+	 * adds a new choice to the 'orderChoicesSides' table.
+	 * @param {Object} body the object to be inserted into the database.
+	 * @returns {Object} returns new Orders object.
+	 */
+	async addMainDish(body) {
+		const sql = `INSERT INTO mainDishes (name, photo, price, ingredientsCost)
+					 VALUES('${body.name}', '${body.photo}', ${body.price}, ${body.ingredientsCost});`
+		await this.db.run(sql)
+		return true
+	}
+
+	async close() {
+		await this.db.close()
 	}
 }
 
