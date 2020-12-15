@@ -16,9 +16,9 @@ class MainDishes {
 			await this.db.run(sql)
 			return this
 		})()
-    }
+	}
 
-    /**
+	/**
 	 * gets all records in the 'roles' table.
 	 * @returns {Object} returns object if records exist in table.
 	 */

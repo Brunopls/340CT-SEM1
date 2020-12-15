@@ -53,7 +53,7 @@ class Orders {
 	 */
 	async addOrder(body) {
 		const sql = `INSERT INTO orders (tableNumber, numDiners, statusCode, time, totalPrice, totalIngredientsCost)\
-					 VALUES(${body.tableNumber}, ${body.numDiners}, ${body.statusCode}, '${body.time}', ${body.totalPrice}, ${body.totalIngredientsCost});`	
+					 VALUES(${body.tableNumber}, ${body.numDiners}, ${body.statusCode}, '${body.time}', ${body.totalPrice}, ${body.totalIngredientsCost});`
 		await this.db.run(sql)
 		return true
 	}

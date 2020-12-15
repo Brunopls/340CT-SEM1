@@ -20,7 +20,7 @@ class OrderChoices {
 			await this.db.run(sql)
 			return this
 		})()
-    }
+	}
 
 	/**
 	 * gets all the choices for a single order.
@@ -32,16 +32,16 @@ class OrderChoices {
 		const data = await this.db.all(sql)
 		if(data !== undefined) return data
 		else throw new Error('No matching id')
-    }
-    
-    /**
+	}
+
+	/**
 	 * adds a new choice to the 'orderChoices' table.
 	 * @param {Object} body the object to be inserted into the database.
 	 * @returns {Object} returns new Orders object.
 	 */
 	async addMainDishChoice(body) {
 		const sql = `INSERT INTO orderChoices (mainDishID, orderID, quantity, price, ingredientsCost)\
-					 VALUES(${body.mainDishID}, ${body.orderID}, ${body.quantity}, '${body.price}', ${body.ingredientsCost});`	
+					 VALUES(${body.mainDishID}, ${body.orderID}, ${body.quantity}, '${body.price}', ${body.ingredientsCost});`
 		await this.db.run(sql)
 		return true
 	}

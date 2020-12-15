@@ -87,10 +87,10 @@ secureRouter.post('/orders/create', async ctx => {
 	if(ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
 	try {
-		const { body } = ctx.request;
+		const { body } = ctx.request
 		console.dir(body)
 		const result = await orders.addOrder(body)
-		ctx.hbs.body = result;
+		ctx.hbs.body = result
 	} catch(err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
