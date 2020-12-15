@@ -1,0 +1,35 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Bruno Correia">
+    <link href="{{host}}/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <h1>Orders</h1>
+    </header>
+
+    <ul class="order_list">
+        {{#each orders}}
+        <div class="card">
+            <div class="container">
+                <h4><b>Order #{{this.orderID}}</b></h4>
+                <p>Table Number: {{this.tableNumber}}</p>
+                <p>Number of Diners: {{this.numDiners}}</p>
+                <p>Time Placed: {{this.time}}</p>
+                <p>Total Price: {{this.totalPrice}}</p>
+            </div>
+        </div>
+        {{/each}}
+    </ul>
+
+    <main>
+        <p><a href="/secure/orders/create">Add Order</a></p>
+    </main>
+</body>
+
+</html>

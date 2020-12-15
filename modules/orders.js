@@ -16,7 +16,7 @@ class Orders {
                     totalIngredientsCost REAL, \
                     CONSTRAINT fk_statusCode \
                     FOREIGN KEY (statusCode) \
-                    REERENCES statusCodes(id)\
+                    REFERENCES statusCodes(id)\
                     );'
 			await this.db.run(sql)
 			return this
@@ -40,10 +40,22 @@ class Orders {
 	 * @returns {Object} returns object if records exist in table.
 	 */
 	async getOrder(id) {
-		const sql = `SELECT * FROM orders WHERE id = ${id};`
+		const sql = `SELECT * FROM orders WHERE orderID = ${id};`
 		const data = await this.db.get(sql)
 		if(data !== undefined) return data
 		else throw new Error('No matching id')
+	}
+
+	/**
+	 * adds a new order to the 'orders' table.
+	 * @param {Object} body the object to be inserted into the database.
+	 * @returns {Object} returns new Orders object.
+	 */
+	async addOrder(body) {
+		const sql = `INSERT INTO orders (tableNumber, numDiners, statusCode, time, totalPrice, totalIngredientsCost)\
+					 VALUES(${body.tableNumber}, ${body.numDiners}, ${body.statusCode}, '${body.time}', ${body.totalPrice}, ${body.totalIngredientsCost});`	
+		await this.db.run(sql)
+		return true
 	}
 
 	async close() {
