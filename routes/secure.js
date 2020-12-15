@@ -1,5 +1,6 @@
 import Router from 'koa-router'
 import { Roles } from '../modules/roles.js'
+import { StatusCodes } from '../modules/statusCodes.js'
 import { Helpers } from '../helpers/helpers.js'
 import { Orders } from '../modules/orders.js'
 const dbName = 'website.db'
@@ -8,14 +9,14 @@ const secureRouter = new Router({ prefix: '/secure' })
 
 secureRouter.get('/', async ctx => {
 	try {
-		if(ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
+		if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 		const helper = new Helpers()
 
 		//Calculating how many hours the current user has worked so far
 		ctx.hbs.hoursWorked = await helper.getHoursWorked(ctx.hbs.loginTime)
 
 		await ctx.render('secure', ctx.hbs)
-	} catch(err) {
+	} catch (err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
 	}
@@ -28,15 +29,15 @@ secureRouter.get('/', async ctx => {
  * @route {GET} /roles
  */
 secureRouter.get('/roles', async ctx => {
-	if(ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
-	if(ctx.hbs.role.name !== 'admin') return ctx.redirect('/secure?msg=not an admin')
+	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
+	if (ctx.hbs.role.name !== 'admin') return ctx.redirect('/secure?msg=not an admin')
 
 	const roles = await new Roles(dbName)
 	try {
 		const rows = await roles.getRoles()
 		ctx.hbs.body = rows
 
-	} catch(err) {
+	} catch (err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
 	} finally {
@@ -51,14 +52,13 @@ secureRouter.get('/roles', async ctx => {
  * @route {GET} /orders
  */
 secureRouter.get('/orders', async ctx => {
-	if(ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
-
+	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
 	try {
 		const rows = await orders.getOrders()
 		ctx.hbs.orders = rows
 		await ctx.render('orders', ctx.hbs)
-	} catch(err) {
+	} catch (err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
 	} finally {
@@ -73,7 +73,6 @@ secureRouter.get('/orders', async ctx => {
  * @route {GET} /orders/create
  */
 secureRouter.get('/orders/create', async ctx => {
-	console.log(ctx.hbs)
 	await ctx.render('orders-create', ctx.hbs)
 })
 
@@ -84,14 +83,36 @@ secureRouter.get('/orders/create', async ctx => {
  * @route {POST} /orders
  */
 secureRouter.post('/orders/create', async ctx => {
-	if(ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
+	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
 	try {
 		const { body } = ctx.request
-		console.dir(body)
-		const result = await orders.addOrder(body)
-		ctx.hbs.body = result
-	} catch(err) {
+		await orders.addOrder(body)
+		await ctx.redirect('/secure/orders?msg=order successfully created')
+	} catch (err) {
+		ctx.hbs.error = err.message
+		await ctx.render('error', ctx.hbs)
+	} finally {
+		orders.close()
+	}
+})
+
+/**
+ * The script to add a new order.
+ *
+ * @name Post Order Creation Script
+ * @route {POST} /orders
+ */
+secureRouter.post('/orders/:id([0-9])', async ctx => {
+	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
+	const orders = await new Orders(dbName)
+	const statusCodes = await new StatusCodes(dbName);
+	const { id } = ctx.params;
+	try {
+		const statusCode = await statusCodes.getStatusCodeByName("prepared")
+		await orders.updateStatus(id, statusCode.id)
+		await ctx.redirect('/secure/orders?msg=order status successfully updated')
+	} catch (err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
 	} finally {

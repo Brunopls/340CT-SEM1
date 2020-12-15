@@ -58,6 +58,17 @@ class Orders {
 		return true
 	}
 
+	/**
+	 * updates an order in the 'orders' table.
+	 * @param {Integer} id the ID of the object to be updated.
+	 * @returns {Object} returns new Orders object.
+	 */
+	async updateStatus(id, statusCode) {
+		const sql = `UPDATE orders SET statusCode = ${statusCode} WHERE orderID = ${id};`
+		await this.db.run(sql)
+		return true
+	}
+
 	async close() {
 		await this.db.close()
 	}

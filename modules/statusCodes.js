@@ -27,12 +27,24 @@ class StatusCodes {
 	}
 
 	/**
-	 * gets a single record from the 'roles' table with matching role ID.
-	 * @param {Integer} the role ID.
+	 * gets a single record from the 'statusCodes' table with matching status code ID.
+	 * @param {Integer} id the status code ID.
 	 * @returns {Object} returns object if records exist in table.
 	 */
 	async getStatusCode(id) {
 		const sql = `SELECT * FROM statusCodes WHERE id = ${id};`
+		const data = await this.db.get(sql)
+		if(data !== undefined) return data
+		else throw new Error('No matching id')
+	}
+
+	/**
+	 * gets a single record from the 'statusCodes' table with matching status name.
+	 * @param {String} name role ID.
+	 * @returns {Object} returns object if records exist in table.
+	 */
+	async getStatusCodeByName(name) {
+		const sql = `SELECT * FROM statusCodes WHERE name LIKE '%${name}%';`
 		const data = await this.db.get(sql)
 		if(data !== undefined) return data
 		else throw new Error('No matching id')

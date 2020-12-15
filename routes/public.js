@@ -108,7 +108,8 @@ publicRouter.post('/login', async ctx => {
 
 		//Getting a user's role and registering it for role-based access control purposes
 		const roleId = await account.getRoleID(body.user)
-		ctx.session.role = await role.getRole(roleId)
+		const roleObj = await role.getRole(roleId)
+		ctx.session.role = roleObj.name
 
 		//Registering current time in milliseconds so I can later calculate how long someone's worked
 		ctx.session.loginTime = Date.now()
