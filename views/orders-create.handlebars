@@ -29,10 +29,16 @@
 
 			<p>
 				<label for="orderChoices">Order Choices</label><br />
-				<select multiple name="choices" id="choices" value="{{body.orderChoices}}"></select>
-				{{!-- <input type="hidden" id="choices" name="orderChoices" value="{{body.orderChoices}}"> --}}
+				{{!-- <select multiple name="choices" id="choices" value="{{body.orderChoices}}"></select> --}}
+				<input type="hidden" id="choices" name="choices" value="{{body.orderChoices}}">
+				<ul id="orderChoices">
+
+				</ul>
 			</p>
 
+			<p>
+				Order Total: £<span id="orderTotal">0</span>
+			</p>
 			<p>
 			</p>
 
@@ -64,11 +70,37 @@
 	integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+	/*
+	* Every time the document is modified, the hidden input is updated
+	* with the currently selected values. This is done so that we can
+	* accurately transport the data from our view to the back-end.
+	*/
+	$(document).bind('DOMSubtreeModified', function () {
+		var choiceList = [];
+		$("li").each(function(index, element){
+			choiceList.push(parseInt($(element).attr('name')))
+		})
+		$('#choices').val(JSON.stringify(choiceList));
+	});
+
 	function addChoice(dish) {
-		$("#choices").append(`<option value="${dish.mainDishID}" selected>${dish.name}</option>`)
+		//Updates the total price of the order
+		var total = parseInt($("#orderTotal").text())
+		var itemCount = parseInt($("#orderChoices li").length)
+		total += dish.price;
+		$("#orderTotal").text(total);
+
+		//Creates a new list item for the selected order choice
+		$("#orderChoices").append(`<li onclick="removeChoice(${itemCount},${dish.price},${dish.mainDishID})" name="${dish.mainDishID}" id="choice${itemCount}">${dish.name}</li>`)
 	}
 
-	function removeChoice() {
+	function removeChoice(index, price, id) {
+		//Updates the total price of the order
+		var total = parseInt($("#orderTotal").text())
+		total -= price;
+		$("#orderTotal").text(total);
 
+		//Removes the list item
+		$(`#choice${index}`).remove();
 	}
 </script>

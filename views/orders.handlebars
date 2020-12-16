@@ -32,7 +32,7 @@
                 <p>Table Number: {{this.tableNumber}}</p>
                 <p>Number of Diners: {{this.numDiners}}</p>
                 <p>Time Placed: {{this.time}}</p>
-                <p>Total Price: {{this.totalPrice}}</p>
+                <p>Total Price: £{{this.totalPrice}}</p>
                 {{#ifCond ../role "kitchen"}}
                 <form action="/secure/orders/{{../this.orderID}}" method="post">
                     <button class="mark_prepared" type="submit" formmethod="post">Mark as 'Prepared'</button>
