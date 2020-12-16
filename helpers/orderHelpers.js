@@ -61,6 +61,24 @@ class OrderHelpers {
         }
     }
 
+    async changeDateToHHMMFormat(date) {
+        const newDate = new Date(date)
+        const hours = () => {
+            if(newDate.getHours() < 10)
+            return `0${newDate.getHours()}`
+            else
+            return newDate.getHours()
+        }
+
+        const minutes = () => {
+            if(newDate.getMinutes() < 10)
+            return `0${newDate.getMinutes()}`
+            else
+            return newDate.getMinutes()
+        }
+
+        return `${hours()}:${minutes()}`
+    }
 }
 
 export { OrderHelpers }
