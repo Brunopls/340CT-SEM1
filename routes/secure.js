@@ -3,6 +3,7 @@ import { Roles } from '../modules/roles.js'
 import { StatusCodes } from '../modules/statusCodes.js'
 import { Helpers } from '../helpers/helpers.js'
 import { OrderHelpers } from '../helpers/orderHelpers.js'
+import { StatusHelpers } from '../helpers/statusHelpers.js'
 import { Orders } from '../modules/orders.js'
 import { OrderChoices } from '../modules/orderChoices.js'
 import { MainDishes } from '../modules/mainDishes.js'
@@ -58,10 +59,11 @@ secureRouter.get('/roles', async ctx => {
 secureRouter.get('/orders', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
+	const statusHelper = await new StatusHelpers()
 	try {
 		const rows = await orders.getOrders()
-		ctx.hbs.orders = rows
-		await ctx.render('orders', ctx.hbs)
+		ctx.hbs.orders = await statusHelper.changeStatusCodesToStatusNames(rows)
+		await ctx.render('orders', await ctx.hbs)
 	} catch (err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
@@ -105,6 +107,7 @@ secureRouter.post('/orders/create', async ctx => {
 		for (let choice = 0; choice < body.choices.length; choice++) {
 			await orderChoices.addMainDishChoice(await orderHelpers.getOrderChoiceObject(body, choice, order.lastID))
 		}
+
 		await ctx.redirect('/secure/orders?msg=order successfully created')
 	} catch (err) {
 		ctx.hbs.error = err.message
@@ -145,13 +148,13 @@ secureRouter.post('/orders/:id', async ctx => {
  */
 secureRouter.get('/orders/:id', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
-
 	const orders = await new Orders(dbName)
+	const statusHelper = await new StatusHelpers()
 	const { id } = ctx.params
 	try {
 		const order = await orders.getOrder(id)
-		ctx.hbs.body = order
-		await ctx.render('order', ctx.hbs)
+		ctx.hbs.body = await statusHelper.changeStatusCodeToStatusName(order)
+		await ctx.render('order', await ctx.hbs)
 	} catch (err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
@@ -161,9 +164,9 @@ secureRouter.get('/orders/:id', async ctx => {
 })
 
 /**
- * The script to delete an order.
+ * The script to delete an order and the order choices associated with it.
  *
- * @name Post Order Deleting Script
+ * @name Post Order Deleting Endpoint
  * @route {GET} /orders/delete/:id
  */
 secureRouter.post('/orders/delete/:id', async ctx => {
