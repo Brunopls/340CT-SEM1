@@ -63,6 +63,19 @@ class Orders {
 	}
 
 	/**
+	 * deletes an order from the 'orders' table.
+	 * @param {Integer} id the ID of object to be deleted from the database.
+	 */
+	async deleteOrder(id) {
+		try{
+			const sql = `DELETE FROM orders WHERE orderID=${id};`
+			return await this.db.run(sql)
+		} catch(err) {
+			console.log(err)
+		}
+	}
+
+	/**
 	 * updates an order in the 'orders' table.
 	 * @param {Integer} id the ID of the object to be updated.
 	 * @returns {Object} returns new Orders object.

@@ -24,9 +24,9 @@
     <p>Table Number: {{body.tableNumber}}</p>
     <p>Number of Diners: {{body.numDiners}}</p>
     <p>Time Placed: {{body.time}}</p>
-    <p>Total Price: {{body.totalPrice}}</p>
+    <p>Total Price: £{{body.totalPrice}}</p>
 
-    <form action="/secure/orders/delete/{{orderID}}" method="post">
+    <form action="/secure/orders/delete/{{body.orderID}}" method="post">
         <button class="cancel_order" type="submit" formmethod="post">Cancel Order</button>
     </form>
     </div>

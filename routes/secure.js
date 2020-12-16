@@ -194,4 +194,28 @@ secureRouter.get('/orders/:id', async ctx => {
 	}
 })
 
+/**
+ * The script to delete an order.
+ *
+ * @name Post Order Deleting Script
+ * @route {GET} /orders/delete/:id
+ */
+secureRouter.post('/orders/delete/:id', async ctx => {
+	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
+
+	const orders = await new Orders(dbName)
+	const orderChoices = await new OrderChoices(dbName)
+	const { id } = ctx.params
+	try {
+		await orderChoices.deleteOrderChoices(id)
+ 		await orders.deleteOrder(id)
+		await ctx.redirect('/secure/orders?msg=order successfully deleted')
+	} catch (err) {
+		ctx.hbs.error = err.message
+		await ctx.render('error', ctx.hbs)
+	} finally {
+		orders.close()
+	}
+})
+
 export { secureRouter }

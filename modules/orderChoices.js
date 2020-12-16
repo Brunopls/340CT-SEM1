@@ -15,7 +15,10 @@ class OrderChoices {
                     ingredientsCost REAL, \
                     CONSTRAINT fk_mainDish \
                     FOREIGN KEY (mainDishID) \
-                    REFERENCES mainDishes(mainDishID)\
+					REFERENCES mainDishes(mainDishID)\
+					CONSTRAINT fk_orderID \
+                    FOREIGN KEY (orderID) \
+                    REFERENCES orders(orderID)\
                     );'
 			await this.db.run(sql)
 			return this
@@ -42,6 +45,17 @@ class OrderChoices {
 	async addMainDishChoice(body) {
 		const sql = `INSERT INTO orderChoices (mainDishID, orderID, quantity, price, ingredientsCost)\
 					 VALUES(${body.mainDishID}, ${body.orderID}, ${body.quantity}, ${body.price}, ${body.ingredientsCost});`
+		await this.db.run(sql)
+		return true
+	}
+
+	/**
+	 * deletes a choice associated to a certain order from the 'orderChoices' table.
+	 * @param {Integer} id the ID of the order to be deleted.
+	 * @returns {Object} returns new Orders object.
+	 */
+	async deleteOrderChoices(id) {
+		const sql = `DELETE FROM orderChoices WHERE orderID=${id}`
 		await this.db.run(sql)
 		return true
 	}
