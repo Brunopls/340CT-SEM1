@@ -4,7 +4,6 @@ class OrderChoices {
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
-			// we need this table to store the user accounts
 			const sql =
             'CREATE TABLE IF NOT EXISTS orderChoices\
                 (choiceID INTEGER PRIMARY KEY AUTOINCREMENT, \
@@ -13,13 +12,10 @@ class OrderChoices {
                     quantity INTEGER, \
                     price REAL, \
                     ingredientsCost REAL, \
-                    CONSTRAINT fk_mainDish \
-                    FOREIGN KEY (mainDishID) \
+                    CONSTRAINT fk_mainDish FOREIGN KEY (mainDishID) \
 					REFERENCES mainDishes(mainDishID)\
-					CONSTRAINT fk_orderID \
-                    FOREIGN KEY (orderID) \
-                    REFERENCES orders(orderID)\
-                    );'
+					CONSTRAINT fk_orderID FOREIGN KEY (orderID) \
+                    REFERENCES orders(orderID));'
 			await this.db.run(sql)
 			return this
 		})()
@@ -43,8 +39,13 @@ class OrderChoices {
 	 * @returns {Object} returns new Orders object.
 	 */
 	async addMainDishChoice(body) {
-		const sql = `INSERT INTO orderChoices (mainDishID, orderID, quantity, price, ingredientsCost)\
-					 VALUES(${body.mainDishID}, ${body.orderID}, ${body.quantity}, ${body.price}, ${body.ingredientsCost});`
+		const sql =
+			`INSERT INTO orderChoices (mainDishID, orderID, quantity, price, ingredientsCost)\
+					 VALUES(${body.mainDishID},
+							${body.orderID},
+							${body.quantity}, 
+							${body.price}, 
+							${body.ingredientsCost});`
 		await this.db.run(sql)
 		return true
 	}

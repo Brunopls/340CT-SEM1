@@ -2,6 +2,7 @@ import Router from 'koa-router'
 import { Roles } from '../modules/roles.js'
 import { StatusCodes } from '../modules/statusCodes.js'
 import { Helpers } from '../helpers/helpers.js'
+import { OrderHelpers } from '../helpers/orderHelpers.js'
 import { Orders } from '../modules/orders.js'
 import { OrderChoices } from '../modules/orderChoices.js'
 import { MainDishes } from '../modules/mainDishes.js'
@@ -95,52 +96,17 @@ secureRouter.get('/orders/create', async ctx => {
 secureRouter.post('/orders/create', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
-	const mainDishes = await new MainDishes(dbName)
 	const orderChoices = await new OrderChoices(dbName)
-	const statusCodes = await new StatusCodes(dbName)
-
+	const orderHelpers = await new OrderHelpers()
 	try {
 		const { body } = ctx.request
-
-		let totalPrice = 0
-		let totalIngredientsCost = 0
-		body.choices = JSON.parse(body.choices)
-		for (let choice = 0; choice < body.choices.length; choice++) {
-			const dish = await mainDishes.getMainDish(body.choices[choice])
-			totalPrice = totalPrice + dish.price
-			totalIngredientsCost = totalIngredientsCost + dish.ingredientsCost
-		}
-
-		const statusCode = await statusCodes.getStatusCodeByName('placed')
-		const date = new Date()
-
-		const newOrder = {
-			tableNumber: parseInt(body.tableNumber),
-			numDiners: parseInt(body.numDiners),
-			statusCode: statusCode.id,
-			time: date.toLocaleString(),
-			totalPrice: totalPrice,
-			totalIngredientsCost: totalIngredientsCost,
-		}
-
-		const order = await orders.addOrder(newOrder)
+		const order = await orders.addOrder(await orderHelpers.getOrderObject(body))
 
 		for (let choice = 0; choice < body.choices.length; choice++) {
-			const dish = await mainDishes.getMainDish(body.choices[choice])
-			const newOrderChoice = {
-				mainDishID: dish.mainDishID,
-				orderID: order.lastID,
-				quantity: 1,
-				price: totalPrice,
-				ingredientsCost: totalIngredientsCost
-			}
-
-			await orderChoices.addMainDishChoice(newOrderChoice)
+			await orderChoices.addMainDishChoice(await orderHelpers.getOrderChoiceObject(body, choice, order.lastID))
 		}
-
 		await ctx.redirect('/secure/orders?msg=order successfully created')
 	} catch (err) {
-		console.log(err.message)
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
 	} finally {

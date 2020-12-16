@@ -1,4 +1,3 @@
-
 {
 	"env": {
 		"es6": true,
@@ -28,12 +27,12 @@
 		"key-spacing": ["error", {"beforeColon": false, "afterColon": true}],
 		"linebreak-style": ["warn", "unix"],
 		"max-depth": ["error", 3],
-		"max-len": "off",
+		"max-len": ["warn", { "code": 120, "tabWidth": 4 }],
 		"max-lines": ["warn", {"max": 150, "skipBlankLines": true, "skipComments": true}],
-		"max-lines-per-function": "off",
+		"max-lines-per-function": ["warn", {"max": 20, "skipBlankLines": true, "skipComments": true}],
 		"max-nested-callbacks": ["error", 4],
 		"max-params": ["error", 5],
-		"max-statements": ["error", 30],
+		"max-statements": ["error", 20],
 		"no-cond-assign": "error",
 		"no-dupe-args": "error",
 		"no-dupe-keys": "error",
@@ -44,7 +43,7 @@
 		"no-extra-parens": "error",
 		"no-func-assign": "error",
 		"no-irregular-whitespace": "error",
-		"no-magic-numbers": "off",
+		"no-magic-numbers": ["warn", {"ignore": [-1, 0, 1]}],
 		"no-multi-spaces": "warn",
 		"no-multi-str": "off",
 		"no-unexpected-multiline": "error",

@@ -94,6 +94,9 @@ publicRouter.get('/login', async ctx => {
 /**
  * The login endpoint.
  *
+ * Also handles role-based access control & work timekeeping by registering
+ * the user's role and login time in session variables.
+ *
  * @name Login Endpoint
  * @route {POST} /login
  */
@@ -103,15 +106,11 @@ publicRouter.post('/login', async ctx => {
 	ctx.hbs.body = ctx.request.body
 	try {
 		const body = ctx.request.body
-		await account.login(body.user, body.pass)
-		ctx.session.authorised = true
+		ctx.session.authorised = await account.login(body.user, body.pass)
 
-		//Getting a user's role and registering it for role-based access control purposes
 		const roleId = await account.getRoleID(body.user)
 		const roleObj = await role.getRole(roleId)
 		ctx.session.role = roleObj.name
-
-		//Registering current time in milliseconds so I can later calculate how long someone's worked
 		ctx.session.loginTime = Date.now()
 
 		const referrer = body.referrer || '/secure'

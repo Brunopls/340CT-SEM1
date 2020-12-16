@@ -41,7 +41,12 @@ class MainDishSides {
 	 */
 	async addMainDishChoice(body) {
 		const sql = `INSERT INTO mainDishSides (mainDishID, orderID, quantity, price, ingredientsCost)\
-					 VALUES(${body.mainDishID}, ${body.orderID}, ${body.quantity}, '${body.price}', ${body.ingredientsCost});`
+					 VALUES(${body.mainDishID}, 
+							${body.orderID}, 
+							${body.quantity}, 
+							'${body.price}', 
+							${body.ingredientsCost}
+							);`
 		await this.db.run(sql)
 		return true
 	}
