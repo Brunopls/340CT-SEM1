@@ -10,4 +10,3 @@ const nestedRoutes = [publicRouter, secureRouter]
 for (const router of nestedRoutes) apiRouter.use(router.routes(), router.allowedMethods())
 
 export { apiRouter }
-  

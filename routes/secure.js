@@ -1,6 +1,5 @@
 import Router from 'koa-router'
 import { Roles } from '../modules/roles.js'
-import { StatusCodes } from '../modules/statusCodes.js'
 import { Helpers } from '../helpers/helpers.js'
 import { OrderHelpers } from '../helpers/orderHelpers.js'
 import { StatusHelpers } from '../helpers/statusHelpers.js'
@@ -60,11 +59,13 @@ secureRouter.get('/orders', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
 	const statusHelper = await new StatusHelpers()
+	const WAITING_STAFF_ORDERS = 2
+	const KITCHEN_STAFF_ORDERS = 3
 	try {
-		let rows;
-		if (ctx.hbs.role === 'waiting') rows = await orders.getOrders(2)
-		else if (ctx.hbs.role === 'kitchen') rows = await orders.getOrders(1)
-		else if (ctx.hbs.role === 'admin') rows = await orders.getOrders()
+		let rows
+		if (ctx.hbs.role === 'waiting') rows = await orders.getOrders(WAITING_STAFF_ORDERS)
+		else if (ctx.hbs.role === 'kitchen') rows = await orders.getOrders(KITCHEN_STAFF_ORDERS)
+		else rows = await orders.getOrders()
 		ctx.hbs.orders = await statusHelper.changeStatusCodesToStatusNames(rows)
 		await ctx.render('orders', await ctx.hbs)
 	} catch (err) {
@@ -148,11 +149,8 @@ secureRouter.post('/orders/:id', async ctx => {
  * @route {GET} /orders/create
  */
 secureRouter.get('/dish/:id', async ctx => {
-	const { id } = ctx.params
 	const mainDishes = await new MainDishes(dbName)
-
-	ctx.hbs.body = await mainDishes.getMainDish(id)
-
+	ctx.hbs.body = await mainDishes.getMainDish(ctx.params.id)
 	await ctx.render('dish-edit', ctx.hbs)
 })
 
@@ -165,12 +163,11 @@ secureRouter.get('/dish/:id', async ctx => {
 secureRouter.post('/dish/:id', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const dishes = await new MainDishes(dbName)
-	const { id } = ctx.params
 	const { body } = ctx.request
-body.price = parseFloat(body.price)
+	body.price = parseFloat(body.price)
 	body.ingredientsCost = parseFloat(body.ingredientsCost)
 	try {
-		await dishes.updateDish(id, body)
+		await dishes.updateDish(ctx.params.id, body)
 		await ctx.redirect('/secure/orders?msg=dish updated successfully updated')
 	} catch (err) {
 		ctx.hbs.error = err.message
@@ -190,9 +187,8 @@ secureRouter.get('/orders/:id', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
 	const statusHelper = await new StatusHelpers()
-	const { id } = ctx.params
 	try {
-		const order = await orders.getOrder(id)
+		const order = await orders.getOrder(ctx.params.id)
 		ctx.hbs.body = await statusHelper.changeStatusCodeToStatusName(order)
 		await ctx.render('order', await ctx.hbs)
 	} catch (err) {
@@ -214,10 +210,9 @@ secureRouter.post('/orders/delete/:id', async ctx => {
 
 	const orders = await new Orders(dbName)
 	const orderChoices = await new OrderChoices(dbName)
-	const { id } = ctx.params
 	try {
-		await orderChoices.deleteOrderChoices(id)
- 		await orders.deleteOrder(id)
+		await orderChoices.deleteOrderChoices(ctx.params.id)
+ 		await orders.deleteOrder(ctx.params.id)
 		await ctx.redirect('/secure/orders?msg=order successfully deleted')
 	} catch (err) {
 		ctx.hbs.error = err.message
