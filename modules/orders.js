@@ -27,8 +27,9 @@ class Orders {
 	 * gets all records in the 'roles' table.
 	 * @returns {Object} returns object if records exist in table.
 	 */
-	async getOrders() {
-		const sql = 'SELECT * FROM orders;'
+	async getOrders(id = null) {
+		let sql = 'SELECT * FROM orders WHERE statusCode!=3'
+		if(id) sql += ` AND statusCode=${id}`
 		const data = await this.db.all(sql)
 		if(data !== undefined) return data
 		else throw new Error('No records found in \'orders\'.\'')

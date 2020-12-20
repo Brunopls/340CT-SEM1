@@ -30,9 +30,9 @@
 			<p>
 				<label for="orderChoices">Order Choices</label><br />
 				<input type="hidden" id="choices" name="choices" value="{{body.orderChoices}}">
-				<ul id="orderChoices">
+			<ul id="orderChoices">
 
-				</ul>
+			</ul>
 			</p>
 
 			<p>
@@ -41,7 +41,7 @@
 			<p>
 			</p>
 
-				<input type="submit" value="Create">
+			<input type="submit" value="Done">
 		</form>
 	</div>
 	<br />
@@ -54,13 +54,16 @@
 						<img src={{this.photo}} width="50" height="50" style="border-radius: 70%;">
 						<p>{{this.name}}</p>
 						<p>£{{this.price}}</p>
+						{{#ifCond ../role "admin"}}
+						<a href="/secure/dish/{{../this.mainDishID}}">Edit</a>
+						{{/ifCond}}
 					</div>
 				</div>
 			</div>
 		</button>
 		{{/each}}
 	</div>
-
+	
 </body>
 
 </html>
@@ -76,7 +79,7 @@
 	*/
 	$(document).bind('DOMSubtreeModified', function () {
 		var choiceList = [];
-		$("li").each(function(index, element){
+		$("li").each(function (index, element) {
 			choiceList.push(parseInt($(element).attr('name')))
 		})
 		$('#choices').val(JSON.stringify(choiceList));

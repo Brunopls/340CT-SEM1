@@ -52,6 +52,22 @@ class MainDishes {
 		return true
 	}
 
+	/**
+	 * updates an order in the 'orders' table.
+	 * @param {Integer} id the ID of the object to be updated.
+	 * @returns {Object} returns new Orders object.
+	 */
+	async updateDish(id, body) {
+		const sql = `UPDATE mainDishes SET 
+						name = '${body.name}',
+						photo = '${body.photo}',
+						price = ${body.price},
+						ingredientsCost = ${body.ingredientsCost} 
+						WHERE mainDishID = ${id};`
+		await this.db.run(sql)
+		return true
+	}
+
 	async close() {
 		await this.db.close()
 	}

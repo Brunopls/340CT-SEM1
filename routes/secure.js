@@ -61,7 +61,10 @@ secureRouter.get('/orders', async ctx => {
 	const orders = await new Orders(dbName)
 	const statusHelper = await new StatusHelpers()
 	try {
-		const rows = await orders.getOrders()
+		let rows;
+		if (ctx.hbs.role === 'waiting') rows = await orders.getOrders(2)
+		else if (ctx.hbs.role === 'kitchen') rows = await orders.getOrders(1)
+		else if (ctx.hbs.role === 'admin') rows = await orders.getOrders()
 		ctx.hbs.orders = await statusHelper.changeStatusCodesToStatusNames(rows)
 		await ctx.render('orders', await ctx.hbs)
 	} catch (err) {
@@ -84,7 +87,6 @@ secureRouter.get('/orders/create', async ctx => {
 
 	ctx.hbs.mainDishes = await mainDishes.getMainDishes()
 	ctx.hbs.sideDishes = await sideDishes.getSideDishes()
-	// ctx.hbs.mainDishSides = mainDishSides;
 
 	await ctx.render('orders-create', ctx.hbs)
 })
@@ -126,17 +128,55 @@ secureRouter.post('/orders/create', async ctx => {
 secureRouter.post('/orders/:id', async ctx => {
 	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
 	const orders = await new Orders(dbName)
-	const statusCodes = await new StatusCodes(dbName)
 	const { id } = ctx.params
+	const { body } = ctx.request
 	try {
-		const statusCode = await statusCodes.getStatusCodeByName('prepared')
-		await orders.updateStatus(id, statusCode.id)
+		await orders.updateStatus(id, body.statusCode)
 		await ctx.redirect('/secure/orders?msg=order status successfully updated')
 	} catch (err) {
 		ctx.hbs.error = err.message
 		await ctx.render('error', ctx.hbs)
 	} finally {
 		orders.close()
+	}
+})
+
+/**
+ * The order create form.
+ *
+ * @name OrderCreate Page
+ * @route {GET} /orders/create
+ */
+secureRouter.get('/dish/:id', async ctx => {
+	const { id } = ctx.params
+	const mainDishes = await new MainDishes(dbName)
+
+	ctx.hbs.body = await mainDishes.getMainDish(id)
+
+	await ctx.render('dish-edit', ctx.hbs)
+})
+
+/**
+ * The script to update a dish.
+ *
+ * @name Post Order Updating Script
+ * @route {POST} /dish/:id
+ */
+secureRouter.post('/dish/:id', async ctx => {
+	if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
+	const dishes = await new MainDishes(dbName)
+	const { id } = ctx.params
+	const { body } = ctx.request
+body.price = parseFloat(body.price)
+	body.ingredientsCost = parseFloat(body.ingredientsCost)
+	try {
+		await dishes.updateDish(id, body)
+		await ctx.redirect('/secure/orders?msg=dish updated successfully updated')
+	} catch (err) {
+		ctx.hbs.error = err.message
+		await ctx.render('error', ctx.hbs)
+	} finally {
+		dishes.close()
 	}
 })
 

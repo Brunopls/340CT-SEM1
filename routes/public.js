@@ -113,7 +113,7 @@ publicRouter.post('/login', async ctx => {
 		ctx.session.role = roleObj.name
 		ctx.session.loginTime = Date.now()
 
-		const referrer = body.referrer || '/secure'
+	 			const referrer = body.referrer || '/secure'
 		return ctx.redirect(`${referrer}?msg=you are now logged in...`)
 	} catch(err) {
 		ctx.hbs.msg = err.message
