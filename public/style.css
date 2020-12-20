@@ -13,6 +13,14 @@ body {
 	margin: 2em;
 }
 
+.msg-success {
+	border: 1px solid green;
+	font-weight: bold;
+	color: green;
+	padding: 1em;
+	margin: 2em;
+}
+
 header {
 	background-color: #ccc;
 	border-bottom: 5px solid grey;
@@ -241,3 +249,46 @@ td:last-child {
 	width: 10vw;
 	text-align: right;
 }
+
+.card {
+	/* Add shadows to create the "card" effect */
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	transition: 0.3s;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	background-color: rgb(232,232,232);
+}
+  
+  /* On mouse-over, add a deeper shadow */
+  .card:hover {
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  
+  /* Add some padding inside the card container */
+  .container {
+	
+	padding: 2px 16px;
+  }
+
+  .grid-container {
+	display: grid;
+	grid-template-columns: auto auto auto;
+	/* background-color: #2196F3; */
+	padding: 10px;
+  }
+  .grid-item {
+	background-color: rgba(255, 255, 255, 0.8);
+	/* border: 1px solid rgba(0, 0, 0, 0.8); */
+	padding: 20px;
+	font-size: 30px;
+	text-align: center;
+  }
+
+  .order_list {
+	  padding-right: 40px;
+  }
+
+  button {
+	  padding: 10px;
+	  margin-bottom: 10px;
+  }
