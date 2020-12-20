@@ -11,7 +11,7 @@ class Accounts {
 			// we need this table to store the user accounts
 			const sql =
         'CREATE TABLE IF NOT EXISTS users\
-				(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, email TEXT, roleID INTEGER, \
+		(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, email TEXT, roleID INTEGER, \
         CONSTRAINT fk_roleid \
         FOREIGN KEY (roleID) \
         REFERENCES roles(id) \

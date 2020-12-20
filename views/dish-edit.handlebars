@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Bruno Correia">
+    <link href="{{host}}/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <h1>Order #{{body.orderID}}</h1>
+        <a href="/logout">Log out</a>
+        <a href="/secure/">Home</a>
+        <a href="/secure/orders">Order List</a>
+    </header>
+
+    <div class="container">
+        <form action="/secure/dish/{{body.mainDishID}}" method="post">
+            <p>
+                <label for="name">Name</label><br />
+                <input type="text" name="name" placeholder="item name" value="{{body.name}}">
+            </p>
+            <p>
+                <label for="photo">Photo</label><br />
+                <input type="text" name="photo" placeholder="item photo" value="{{body.photo}}">
+            </p>
+            <p>
+                <label for="price">Price</label><br />
+                <input type="text" name="price" placeholder="item price" value="{{body.price}}">
+            </p>
+            <p>
+                <label for="ingredientsCost">Ingredient Cost</label><br />
+                <input type="text" name="ingredientsCost" placeholder="item ingredients cost" value="{{body.ingredientsCost}}">
+            </p>
+            <button class="update_item" type="submit" formmethod="post">Update</button>
+        </form>
+    </div>
+
+
+</body>
+
+</html>

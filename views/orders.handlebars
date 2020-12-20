@@ -1,0 +1,71 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Bruno Correia">
+    <link href="{{host}}/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <h1>Orders</h1>
+        <a href="/logout">Log out</a>
+        <a href="/secure/">Home</a>
+    </header>
+
+    {{#if msg}}
+    <p class="msg-success">{{msg}}</p>
+    {{/if}}
+    {{#ifCond role "waiting"}}
+    <div class="container">
+        <p><a href="/secure/orders/create">Add Order</a></p>
+    </div>
+    {{/ifCond}}
+
+    {{#ifCond role "admin"}}
+    <div class="container">
+        <p><a href="/secure/orders/create">Add Order</a></p>
+    </div>
+    {{/ifCond}}
+    <ul class="order_list">
+        {{#each orders}}
+        <div class="card">
+            <div class="container">
+                <h4><b>Order #{{this.orderID}}</b></h4>
+                <p>Order Status: {{this.statusCode}}</p>
+                <p>Table Number: {{this.tableNumber}}</p>
+                <p>Number of Diners: {{this.numDiners}}</p>
+                <p>Time Placed: {{this.time}}</p>
+                <p>Total Price: £{{this.totalPrice}}</p>
+                <div style="display:inline-block; vertical-align: middle;">
+
+                    <form style="margin-left: 15px;float: left;" action="/secure/orders/{{this.orderID}}"
+                        method="get">
+                        <button class="view_order" type="submit" formmethod="get">View Order</button>
+                    </form>
+
+                    {{#ifCond ../role "kitchen"}}
+                    <form style="margin-left: 15px;float: right;" action="/secure/orders/{{../this.orderID}}"
+                        method="post">
+                        <input type="hidden" id="statusCode" name="statusCode" value="2">
+                        <button class="mark_prepared" type="submit" formmethod="post">Mark as 'Prepared'</button>
+                    </form>
+                    {{/ifCond}}
+
+                    {{#ifCond ../role "admin"}}
+                    <form style="margin-left: 15px;float: right;" action="/secure/orders/{{../this.orderID}}"
+                        method="post">
+                        <input type="hidden" id="statusCode" name="statusCode" value="3">
+                        <button class="mark_taken" type="submit" formmethod="post">Mark as 'Taken'</button>
+                    </form>
+                    {{/ifCond}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </ul>
+</body>
+
+</html>

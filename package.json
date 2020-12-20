@@ -16,10 +16,10 @@
 	"scripts": {
 		"packagedeps": "./node_modules/.bin/depcheck .",
 		"dependency": "./node_modules/.bin/dependency-check -i bcrypt --unused --no-dev . && node_modules/.bin/dependency-check --missing .",
-		"start": "node index.js",
+		"start": "nodemon index.js",
 		"jsdoc": "node_modules/.bin/jsdoc -c jsdoc.conf",
 		"linter": "node_modules/.bin/eslint .",
-    "linterfix": "node_modules/.bin/eslint . --fix",
+		"linterfix": "node_modules/.bin/eslint . --fix",
 		"test": "ava"
 	},
 	"author": "",
@@ -27,6 +27,7 @@
 	"dependencies": {
 		"bcrypt": "^5.0.0",
 		"bcrypt-promise": "^2.0.0",
+		"faker": "^5.1.0",
 		"handlebars": "^4.7.6",
 		"koa": "^2.13.0",
 		"koa-body": "^4.2.0",
@@ -45,6 +46,7 @@
 		"esm": "^3.2.25",
 		"jscpd": "^3.3.19",
 		"jsdoc": "^3.6.6",
-		"jsdoc-route-plugin": "^0.1.0"
+		"jsdoc-route-plugin": "^0.1.0",
+		"nodemon": "^2.0.6"
 	}
 }
