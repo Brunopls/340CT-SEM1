@@ -35,10 +35,20 @@ jobs:
       - name: check for linting errors
         run: ./node_modules/.bin/eslint
   
-      #Deploy to Heroku by pushing to remote heroku git repo
-      - name: deploy app to heroku
+      #Installs ruby-dev toolchain 
+      - name: install ruby-dev toolchain
+        run: sudo apt install -y ruby-dev
+      
+      #Installs dpl gem which we'll use to deploy to Heroku
+      - name: install ruby-dev toolchain
+        run: sudo gem install dpl
+      
+      #Deploys the app to Heroku
+      - name: deploy app to Heroku
         env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_TOKEN }}
-        run: git push https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git origin/master:master
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: sudo dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=HEROKU_API_KEY
+        
   
         
