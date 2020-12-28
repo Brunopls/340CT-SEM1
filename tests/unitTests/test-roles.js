@@ -1,5 +1,5 @@
 import test from 'ava'
-import { Roles } from '../modules/roles.js'
+import { Roles } from '../../modules/roles.js'
 
 test('ROLES : error if invalid role ID', async test => {
 	test.plan(1)

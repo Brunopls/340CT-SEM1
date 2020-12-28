@@ -1,0 +1,108 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Add an Order</title>
+	<meta name="description" content="form to add a new order">
+	<meta name="author" content="Bruno Correia">
+	<link href="{{host}}/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+	<header>
+		<h1>Add an Order</h1>
+		<a href="/secure/orders">Order List</a>
+	</header>
+	<div class="container">
+		<form action="/secure/orders/create" enctype="multipart/form-data" method="post">
+			<p>
+				<label for="tableNumber">Table Number</label><br />
+				<input type="number" name="tableNumber" placeholder="the table number" value="{{body.tableNumber}}">
+			</p>
+
+			<p>
+				<label for="numDiners">Number of Diners</label><br />
+				<input type="number" name="numDiners" placeholder="the number of diners" value="{{body.numDiners}}">
+			</p>
+
+			<p>
+				<label for="orderChoices">Order Choices</label><br />
+				<input type="hidden" id="choices" name="choices" value="{{body.orderChoices}}">
+			<ul id="orderChoices">
+
+			</ul>
+			</p>
+
+			<p>
+				Order Total: £<span id="orderTotal">0</span>
+			</p>
+			<p>
+			</p>
+
+			<input type="submit" value="Done">
+		</form>
+	</div>
+	<br />
+	<div class="grid-container">
+		{{#each mainDishes}}
+		<button style="border:none;cursor:pointer;padding:0;" onclick="addChoice({{json this}})">
+			<div class="grid-item">
+				<div class="card">
+					<div class="container" style="background-color: rgb(232,232,232);">
+						<img src={{this.photo}} width="50" height="50" style="border-radius: 70%;">
+						<p>{{this.name}}</p>
+						<p>£{{this.price}}</p>
+						{{#ifCond ../role "admin"}}
+						<a href="/secure/dish/{{../this.mainDishID}}">Edit</a>
+						{{/ifCond}}
+					</div>
+				</div>
+			</div>
+		</button>
+		{{/each}}
+	</div>
+	
+</body>
+
+</html>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+	integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	/*
+	* Every time the document is modified, the hidden input is updated
+	* with the currently selected values. This is done so that we can
+	* accurately transport the data from our view to the back-end.
+	*/
+	$(document).bind('DOMSubtreeModified', function () {
+		var choiceList = [];
+		$("li").each(function (index, element) {
+			choiceList.push(parseInt($(element).attr('name')))
+		})
+		$('#choices').val(JSON.stringify(choiceList));
+	});
+
+	function addChoice(dish) {
+		//Updates the total price of the order
+		var total = parseInt($("#orderTotal").text())
+		var itemCount = parseInt($("#orderChoices li").length)
+		total += dish.price;
+		$("#orderTotal").text(total);
+
+		//Creates a new list item for the selected order choice
+		$("#orderChoices").append(`<li onclick="removeChoice(${itemCount},${dish.price},${dish.mainDishID})" name="${dish.mainDishID}" id="choice${itemCount}">${dish.name}</li>`)
+	}
+
+	function removeChoice(index, price, id) {
+		//Updates the total price of the order
+		var total = parseInt($("#orderTotal").text())
+		total -= price;
+		$("#orderTotal").text(total);
+
+		//Removes the list item
+		$(`#choice${index}`).remove();
+	}
+</script>

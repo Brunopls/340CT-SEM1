@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Bruno Correia">
+    <link href="{{host}}/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <h1>Order #{{body.orderID}}</h1>
+        <a href="/logout">Log out</a>
+        <a href="/secure/">Home</a>
+        <a href="/secure/orders">Order List</a>
+    </header>
+
+    {{#if msg}}
+    <p class="msg-success">{{msg}}</p>
+    {{/if}}
+    <div class="container">
+    <p>Order Status: {{body.statusCode}}</p>
+    <p>Table Number: {{body.tableNumber}}</p>
+    <p>Number of Diners: {{body.numDiners}}</p>
+    <p>Time Placed: {{body.time}}</p>
+    <p>Total Price: £{{body.totalPrice}}</p>
+
+    <form action="/secure/orders/delete/{{body.orderID}}" method="post">
+        <button class="cancel_order" type="submit" formmethod="post">Cancel Order</button>
+    </form>
+    </div>
+    
+
+</body>
+
+</html>

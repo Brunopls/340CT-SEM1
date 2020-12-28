@@ -1,6 +1,5 @@
-
 import test from 'ava'
-import { Accounts } from '../modules/accounts.js'
+import { Accounts } from '../../modules/accounts.js'
 
 test('REGISTER : register and log in with a valid account', async test => {
 	test.plan(1)
