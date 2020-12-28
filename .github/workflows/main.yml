@@ -1,0 +1,60 @@
+name: 340CT CI/CD GitHub Actions
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  installDependenciesAndRunTests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      #Runs 'npm ci' to install all node modules
+      - name: install node modules
+        run: npm ci
+      
+      #Runs test suites to check for testing errors  
+      - name: run test suites
+        run: npm test
+
+  installAndRunESLint:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            node-version: [12.x]
+        steps:
+          - uses: actions/checkout@v2
+          - name: Use Node.js ${{ matrix.node-version }}
+            uses: actions/setup-node@v1
+            with:
+              node-version: ${{ matrix.node-version }}
+          #Installs ESLint
+          - name: install ESLint
+            run: npm install eslint
+
+          #Runs ESLint
+          - name: check for linting errors
+            run: ./node_modules/.bin/eslint
+
+  deployToHeroku:
+        if: github.ref == 'refs/heads/master'
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v2
+            with:
+                  fetch-depth: 0
+          #Deploys the app to Heroku
+          - name: deploy app to Heroku
+            run: git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/oliveirb-sem1.git
+            env:
+              HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
