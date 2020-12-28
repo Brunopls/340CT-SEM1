@@ -35,7 +35,8 @@
 		"koa-session": "^6.0.0",
 		"koa-static": "^5.0.0",
 		"koa-views": "^6.3.0",
-		"sqlite-async": "^1.1.0"
+		"sqlite-async": "^1.1.0",
+		"nodemon": "^2.0.6"
 	},
 	"devDependencies": {
 		"ava": "^3.12.1",
@@ -46,7 +47,6 @@
 		"esm": "^3.2.25",
 		"jscpd": "^3.3.19",
 		"jsdoc": "^3.6.6",
-		"jsdoc-route-plugin": "^0.1.0",
-		"nodemon": "^2.0.6"
+		"jsdoc-route-plugin": "^0.1.0"
 	}
 }
