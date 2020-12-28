@@ -1,12 +1,10 @@
-name: CI
+name: 340CT CI/CD GitHub Actions
 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
-  workflow_dispatch:
 
 jobs:
   runTests:
@@ -39,6 +37,8 @@ jobs:
   
       #Deploy to Heroku by pushing to remote heroku git repo
       - name: deploy app to heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_TOKEN }}
         run: git push https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git origin/master:master
   
         
