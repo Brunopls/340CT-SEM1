@@ -1,6 +1,17 @@
 import sqlite from 'sqlite-async'
 
+/**
+ *
+ *
+ * @class models/OrderChoices
+ */
 class OrderChoices {
+	/**
+	 * Creates an instance of OrderChoices.
+	 * @param {string} [dbName=':memory:']
+	 * @function
+	 * @memberof models/OrderChoices
+	 */
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
@@ -25,6 +36,7 @@ class OrderChoices {
 	 * gets all the choices for a single order.
 	 * @param {Integer} id order ID.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/OrderChoices
 	 */
 	async getOrderChoice(id) {
 		const sql = `SELECT * FROM orderChoices WHERE orderID = ${id};`
@@ -37,6 +49,7 @@ class OrderChoices {
 	 * adds a new choice to the 'orderChoices' table.
 	 * @param {Object} body the object to be inserted into the database.
 	 * @returns {Object} returns new Orders object.
+	 * @memberof models/OrderChoices
 	 */
 	async addMainDishChoice(body) {
 		const sql =
@@ -54,6 +67,7 @@ class OrderChoices {
 	 * deletes a choice associated to a certain order from the 'orderChoices' table.
 	 * @param {Integer} id the ID of the order to be deleted.
 	 * @returns {Object} returns new Orders object.
+	 * @memberof models/OrderChoices
 	 */
 	async deleteOrderChoices(id) {
 		const sql = `DELETE FROM orderChoices WHERE orderID=${id}`

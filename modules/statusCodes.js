@@ -1,6 +1,17 @@
 import sqlite from 'sqlite-async'
 
+/**
+ *
+ *
+ * @class models/StatusCodes
+ */
 class StatusCodes {
+	/**
+	 * Creates an instance of StatusCodes.
+	 * @param {string} [dbName=':memory:']
+	 * @function
+	 * @memberof models/StatusCodes
+	 */
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
@@ -18,6 +29,7 @@ class StatusCodes {
 	/**
 	 * gets all records in the 'roles' table.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/StatusCodes
 	 */
 	async getStatusCodes() {
 		const sql = 'SELECT * FROM statusCodes;'
@@ -30,6 +42,7 @@ class StatusCodes {
 	 * gets a single record from the 'statusCodes' table with matching status code ID.
 	 * @param {Integer} id the status code ID.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/StatusCodes
 	 */
 	async getStatusCode(id) {
 		const sql = `SELECT * FROM statusCodes WHERE id = ${id};`
@@ -42,6 +55,7 @@ class StatusCodes {
 	 * gets a single record from the 'statusCodes' table with matching status name.
 	 * @param {String} name role ID.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/StatusCodes
 	 */
 	async getStatusCodeByName(name) {
 		const sql = `SELECT * FROM statusCodes WHERE name LIKE '%${name}%';`
@@ -50,6 +64,10 @@ class StatusCodes {
 		else throw new Error('No matching id')
 	}
 
+	/**
+	 * closes the connection to SQLite database
+	 * @memberof models/StatusCodes
+	 */
 	async close() {
 		await this.db.close()
 	}

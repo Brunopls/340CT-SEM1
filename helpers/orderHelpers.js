@@ -6,8 +6,19 @@ import { Roles } from '../modules/roles.js'
 import { StatusCodes } from '../modules/statusCodes.js'
 const dbName = 'website.db'
 
+/**
+ *
+ *
+ * @class helpers/OrderHelpers
+ */
 class OrderHelpers {
 
+    /**
+     *
+     * @param {Object} body unformatted order object
+     * @return {Object} formatted object
+     * @memberof helpers/OrderHelpers
+     */
     async getOrderObject(body) {
         const statusCodes = await new StatusCodes(dbName)
 
@@ -29,6 +40,12 @@ class OrderHelpers {
         }
     }
 
+    /**
+     *
+     * @param {Object} body unformatted order object
+     * @return {Float} calculated total price of an order
+     * @memberof helpers/OrderHelpers
+     */
     async getTotalPrice(body) {
         const mainDishes = await new MainDishes(dbName)
         let totalPrice = 0;
@@ -39,6 +56,12 @@ class OrderHelpers {
         return totalPrice;
     }
 
+    /**
+     *
+     * @param {Object} body unformatted order object
+     * @return {Float} calculated ingredient cost of an order
+     * @memberof helpers/OrderHelpers
+     */
     async getTotalIngredientsCost(body) {
         const mainDishes = await new MainDishes(dbName)
         let totalIngredientsCost = 0;
@@ -49,6 +72,14 @@ class OrderHelpers {
         return totalIngredientsCost;
     }
 
+    /**
+     *
+     * @param {Object} body unformatted order object
+     * @param {Object} choice unformatted choice object
+     * @param {Integer} orderID ID of an order
+     * @return {Object} formatted order choice object
+     * @memberof helpers/OrderHelpers
+     */
     async getOrderChoiceObject(body, choice, orderID) {
         const mainDishes = await new MainDishes(dbName)
         const dish = await mainDishes.getMainDish(body.choices[choice])

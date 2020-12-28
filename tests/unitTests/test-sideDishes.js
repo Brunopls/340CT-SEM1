@@ -3,7 +3,7 @@ import { SideDishes } from '../../modules/sideDishes.js'
 import faker from 'faker'
 
 test('SIDE DISHES : true if record created successfully', async t => {
-	const dish = await new SideDishes('website.db')
+	const dish = await new SideDishes()
 	try {
 		const newSideDish = {
 			name: faker.lorem.words(),

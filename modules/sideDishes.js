@@ -1,6 +1,17 @@
 import sqlite from 'sqlite-async'
 
+/**
+ *
+ *
+ * @class models/SideDishes
+ */
 class SideDishes {
+	/**
+	 * Creates an instance of SideDishes.
+	 * @param {string} [dbName=':memory:']
+	 * @function
+	 * @memberof models/SideDishes
+	 */
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
@@ -21,6 +32,7 @@ class SideDishes {
 	/**
 	 * gets all records in the 'roles' table.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/SideDishes
 	 */
 	async getSideDishes() {
 		const sql = 'SELECT * FROM sideDishes;'
@@ -33,6 +45,7 @@ class SideDishes {
 	 * gets a single record from the 'roles' table with matching role ID.
 	 * @param {Integer} the role ID.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/SideDishes
 	 */
 	async getSideDish(id) {
 		const sql = `SELECT * FROM sideDishes WHERE sideDishID = ${id};`
@@ -45,6 +58,7 @@ class SideDishes {
 	 * adds a new choice to the 'orderChoicesSides' table.
 	 * @param {Object} body the object to be inserted into the database.
 	 * @returns {Object} returns new Orders object.
+	 * @memberof models/SideDishes
 	 */
 	async addSideDish(body) {
 		const sql = `INSERT INTO sideDishes (name, photo, price, ingredientsCost)
@@ -53,6 +67,10 @@ class SideDishes {
 		return true
 	}
 
+	/**
+	 * closes the connection to SQLite database
+	 * @memberof models/SideDishes
+	 */
 	async close() {
 		await this.db.close()
 	}

@@ -1,6 +1,17 @@
 import sqlite from 'sqlite-async'
 
+/**
+ *
+ *
+ * @class models/Orders
+ */
 class Orders {
+	/**
+	 * Creates an instance of Orders.
+	 * @param {string} [dbName=':memory:']
+	 * @function
+	 * @memberof models/Orders
+	 */
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
@@ -26,6 +37,7 @@ class Orders {
 	/**
 	 * gets all records in the 'roles' table.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/Orders
 	 */
 	async getOrders(id = null) {
 		let sql = 'SELECT * FROM orders WHERE statusCode!=3'
@@ -39,6 +51,7 @@ class Orders {
 	 * gets a single record from the 'roles' table with matching role ID.
 	 * @param {Integer} the role ID.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/Orders
 	 */
 	async getOrder(id) {
 		const sql = `SELECT * FROM orders WHERE orderID = ${id};`
@@ -51,6 +64,7 @@ class Orders {
 	 * adds a new order to the 'orders' table.
 	 * @param {Object} body the object to be inserted into the database.
 	 * @returns {Object} returns new Orders object.
+	 * @memberof models/Orders
 	 */
 	async addOrder(body) {
 		try{
@@ -72,6 +86,8 @@ class Orders {
 	/**
 	 * deletes an order from the 'orders' table.
 	 * @param {Integer} id the ID of object to be deleted from the database.
+	 * @return {Boolean} true if order is deleted
+	 * @memberof models/Orders
 	 */
 	async deleteOrder(id) {
 		try{
@@ -86,6 +102,7 @@ class Orders {
 	 * updates an order in the 'orders' table.
 	 * @param {Integer} id the ID of the object to be updated.
 	 * @returns {Object} returns new Orders object.
+	 * @memberof models/Orders
 	 */
 	async updateStatus(id, statusCode) {
 		const sql = `UPDATE orders SET statusCode = ${statusCode} WHERE orderID = ${id};`
@@ -93,6 +110,10 @@ class Orders {
 		return true
 	}
 
+	/**
+	 * closes the connection to SQLite database
+	 * @memberof models/Orders
+	 */
 	async close() {
 		await this.db.close()
 	}
