@@ -3,8 +3,19 @@ import sqlite from 'sqlite-async'
 
 const saltRounds = 10
 
+/**
+ *
+ *
+ * @class models/Accounts
+ */
 class Accounts {
 
+	/**
+	 * Creates an instance of Accounts.
+	 * @param {string} [dbName=':memory:']
+	 * @function
+	 * @memberof models/Accounts
+	 */
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
@@ -21,11 +32,14 @@ class Accounts {
 		})()
 	}
 
+
 	/**
-	 * registers a new user
-	 * @param {String} user the chosen username
-	 * @param {String} pass the chosen password
-	 * @returns {Boolean} returns true if the new user has been added.
+	 *
+	 * @param {String} user provided username
+	 * @param {String} pass provided password
+	 * @param {String} email provided email
+	 * @return {Boolean} true if registration succeeds
+	 * @memberof models/Accounts
 	 */
 	async register(user, pass, email) {
 		Array.from(arguments).forEach( val => {
@@ -48,7 +62,8 @@ class Accounts {
 	 * checks to see if a set of login credentials are valid
 	 * @param {String} username the username to check
 	 * @param {String} password the password to check
-	 * @returns {Boolean} returns true if credentials are valid
+	 * @return {Boolean} returns true if credentials are valid
+	 * @memberof models/Accounts
 	 */
 	async login(username, password) {
 		let sql = `SELECT count(id) AS count FROM users WHERE user="${username}";`
@@ -65,6 +80,7 @@ class Accounts {
 	 * gets user's role ID
 	 * @param {String} username the username to check
 	 * @returns {Integer} returns roleID if credentials are valid
+	 * @memberof models/Accounts
 	 */
 	async getRoleID(username) {
 		let sql = `SELECT count(id) AS count FROM users WHERE user="${username}";`
@@ -75,6 +91,10 @@ class Accounts {
 		return row.roleID
 	}
 
+	/**
+	 * closes the connection to SQLite database
+	 * @memberof models/Accounts
+	 */
 	async close() {
 		await this.db.close()
 	}

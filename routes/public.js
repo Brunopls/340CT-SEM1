@@ -1,8 +1,17 @@
-
+/** Koa Router serving public resources
+ * @module routers/public
+ * @requires koa-router
+ */
 import Router from 'koa-router'
 import bodyParser from 'koa-body'
 import { Helpers } from '../helpers/helpers.js'
 
+/**
+ * Koa Router to mount user related functions on
+ * @type {Object}
+ * @const
+ * @namespace publicRouter
+ */
 const publicRouter = new Router()
 publicRouter.use(bodyParser({multipart: true}))
 
@@ -11,8 +20,8 @@ import { Roles } from '../modules/roles.js'
 const dbName = 'website.db'
 
 /**
- * The secure home page.
- *
+ * The public home page.
+ * @memberof module:routers/public~publicRouter
  * @name Home Page
  * @route {GET} /
  */
@@ -26,7 +35,7 @@ publicRouter.get('/', async ctx => {
 
 /**
  * The user registration page.
- *
+ * @memberof module:routers/public~publicRouter
  * @name Register Page
  * @route {GET} /register
  */
@@ -34,8 +43,8 @@ publicRouter.get('/register', async ctx => await ctx.render('register'))
 
 /**
  * The script to process new user registrations.
- *
- * @name Register Script
+ * @memberof module:routers/public~publicRouter
+ * @name Register Endpoint
  * @route {POST} /register
  */
 publicRouter.post('/register', async ctx => {
@@ -58,8 +67,8 @@ publicRouter.get('/postregister', async ctx => await ctx.render('validate'))
 
 /**
  * The script to validate user login input.
- *
- * @name Login Validation Script
+ * @memberof module:routers/public~publicRouter
+ * @name Login Validation Endpoint
  * @route {GET} /validate/:user/:token
  */
 publicRouter.get('/validate/:user/:token', async ctx => {
@@ -82,7 +91,7 @@ publicRouter.get('/validate/:user/:token', async ctx => {
 
 /**
  * The login page script.
- *
+ * @memberof module:routers/public~publicRouter
  * @name Login Page
  * @route {GET} /login
  */
@@ -97,7 +106,8 @@ publicRouter.get('/login', async ctx => {
  * Also handles role-based access control & work timekeeping by registering
  * the user's role and login time in session variables.
  *
- * @name Login Endpoint
+ * @memberof module:routers/public~publicRouter
+ * @name Login Script Endpoint
  * @route {POST} /login
  */
 publicRouter.post('/login', async ctx => {
@@ -125,8 +135,8 @@ publicRouter.post('/login', async ctx => {
 
 /**
  * The logout script.
- *
- * @name Logout Script
+ * @memberof module:routers/public~publicRouter
+ * @name Logout Script Endpoint
  * @route {GET} /logout
  */
 publicRouter.get('/logout', async ctx => {

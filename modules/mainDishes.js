@@ -1,6 +1,17 @@
 import sqlite from 'sqlite-async'
 
+/**
+ *
+ *
+ * @class models/MainDishes
+ */
 class MainDishes {
+	/**
+	 * Creates an instance of MainDishes.
+	 * @param {string} [dbName=':memory:']
+	 * @function
+	 * @memberof models/MainDishes
+	 */
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
@@ -20,6 +31,7 @@ class MainDishes {
 	/**
 	 * gets all records in the 'roles' table.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/MainDishes
 	 */
 	async getMainDishes() {
 		const sql = 'SELECT * FROM mainDishes;'
@@ -30,8 +42,9 @@ class MainDishes {
 
 	/**
 	 * gets a single record from the 'roles' table with matching role ID.
-	 * @param {Integer} the role ID.
+	 * @param {Integer} id role ID.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/MainDishes
 	 */
 	async getMainDish(id) {
 		const sql = `SELECT * FROM mainDishes WHERE mainDishID = ${id};`
@@ -44,6 +57,7 @@ class MainDishes {
 	 * adds a new choice to the 'orderChoicesSides' table.
 	 * @param {Object} body the object to be inserted into the database.
 	 * @returns {Object} returns new Orders object.
+	 * @memberof models/MainDishes
 	 */
 	async addMainDish(body) {
 		const sql = `INSERT INTO mainDishes (name, photo, price, ingredientsCost)
@@ -56,6 +70,7 @@ class MainDishes {
 	 * updates an order in the 'orders' table.
 	 * @param {Integer} id the ID of the object to be updated.
 	 * @returns {Object} returns new Orders object.
+	 * @memberof models/MainDishes
 	 */
 	async updateDish(id, body) {
 		const sql = `UPDATE mainDishes SET 
@@ -68,6 +83,11 @@ class MainDishes {
 		return true
 	}
 
+
+	/**
+	 * closes the connection to SQLite database
+	 * @memberof models/MainDishes
+	 */
 	async close() {
 		await this.db.close()
 	}

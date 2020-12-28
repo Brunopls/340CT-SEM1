@@ -1,6 +1,17 @@
 import sqlite from 'sqlite-async'
 
+/**
+ *
+ *
+ * @class models/OrderChoicesSides
+ */
 class OrderChoicesSides {
+	/**
+	 * Creates an instance of OrderChoicesSides.
+	 * @param {string} [dbName=':memory:']
+	 * @function
+	 * @memberof models/OrderChoicesSides
+	 */
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
@@ -25,6 +36,7 @@ class OrderChoicesSides {
 	 * gets all the choices for a single order.
 	 * @param {Integer} id order ID.
 	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/OrderChoicesSides
 	 */
 	async getOrderChoiceSides(id) {
 		const sql = `SELECT * FROM orderChoicesSides WHERE orderID = ${id};`
@@ -37,6 +49,7 @@ class OrderChoicesSides {
 	 * adds a new choice to the 'orderChoicesSides' table.
 	 * @param {Object} body the object to be inserted into the database.
 	 * @returns {Object} returns new Orders object.
+	 * @memberof models/OrderChoicesSides
 	 */
 	async addSideDishChoice(body) {
 		const sql =

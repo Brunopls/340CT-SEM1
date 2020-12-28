@@ -1,3 +1,7 @@
+/** Koa Router serving private resources to authenticated users
+ * @module routers/secure
+ * @requires koa-router
+ */
 import Router from 'koa-router'
 import { Roles } from '../modules/roles.js'
 import { Helpers } from '../helpers/helpers.js'
@@ -9,8 +13,20 @@ import { MainDishes } from '../modules/mainDishes.js'
 import { SideDishes } from '../modules/sideDishes.js'
 const dbName = 'website.db'
 
+/**
+ * Koa Router to mount authenticated user related functions on
+ * @type {Object}
+ * @const
+ * @namespace secureRouter
+ */
 const secureRouter = new Router({ prefix: '/secure' })
 
+/**
+ * The secure page.
+ * @memberof module:routers/secure~secureRouter
+ * @name Secure Secure Page
+ * @route {GET} /
+ */
 secureRouter.get('/', async ctx => {
 	try {
 		if (ctx.hbs.authorised !== true) return ctx.redirect('/login?msg=you need to log in&referrer=/secure')
@@ -28,7 +44,7 @@ secureRouter.get('/', async ctx => {
 
 /**
  * The script to get all roles.
- *
+ * @memberof module:routers/secure~secureRouter
  * @name Get Roles Script
  * @route {GET} /roles
  */
@@ -51,7 +67,7 @@ secureRouter.get('/roles', async ctx => {
 
 /**
  * The script to get all orders.
- *
+ * @memberof module:routers/secure~secureRouter
  * @name Get Orders Script
  * @route {GET} /orders
  */
@@ -78,7 +94,7 @@ secureRouter.get('/orders', async ctx => {
 
 /**
  * The order create form.
- *
+ * @memberof module:routers/secure~secureRouter
  * @name OrderCreate Page
  * @route {GET} /orders/create
  */
@@ -94,7 +110,7 @@ secureRouter.get('/orders/create', async ctx => {
 
 /**
  * The script to add a new order.
- *
+ * @memberof module:routers/secure~secureRouter
  * @name Post Order Creation Script
  * @route {POST} /orders
  */
@@ -122,7 +138,7 @@ secureRouter.post('/orders/create', async ctx => {
 
 /**
  * The script to update an order.
- *
+ * @memberof module:routers/secure~secureRouter
  * @name Post Order Updating Script
  * @route {POST} /orders/:id
  */
@@ -144,7 +160,7 @@ secureRouter.post('/orders/:id', async ctx => {
 
 /**
  * The order create form.
- *
+ * @memberof module:routers/secure~secureRouter
  * @name OrderCreate Page
  * @route {GET} /orders/create
  */
@@ -156,7 +172,7 @@ secureRouter.get('/dish/:id', async ctx => {
 
 /**
  * The script to update a dish.
- *
+ * @memberof module:routers/secure~secureRouter
  * @name Post Order Updating Script
  * @route {POST} /dish/:id
  */
@@ -179,7 +195,7 @@ secureRouter.post('/dish/:id', async ctx => {
 
 /**
  * The script to view an order.
- *
+ * @memberof module:routers/secure~secureRouter
  * @name Post Order Viewing Script
  * @route {GET} /orders/:id
  */
@@ -201,7 +217,7 @@ secureRouter.get('/orders/:id', async ctx => {
 
 /**
  * The script to delete an order and the order choices associated with it.
- *
+ * @memberof module:routers/secure~secureRouter
  * @name Post Order Deleting Endpoint
  * @route {GET} /orders/delete/:id
  */

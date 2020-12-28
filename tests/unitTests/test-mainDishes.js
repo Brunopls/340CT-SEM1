@@ -3,7 +3,7 @@ import { MainDishes } from '../../modules/mainDishes.js'
 import faker from 'faker'
 
 test('MAIN DISHES : true if record created successfully', async t => {
-	const dish = await new MainDishes('test-website.db')
+	const dish = await new MainDishes()
 	try {
 		const newDish = {
 			name: faker.lorem.words(),
