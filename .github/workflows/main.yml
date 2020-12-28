@@ -9,15 +9,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  runTests:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [12.x]
-
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -25,12 +22,23 @@ jobs:
           node-version: ${{ matrix.node-version }}
       
       #Runs 'npm ci' to install all node modules
-      #Runs test suites to check for testing errors
-      - run: npm ci
-      - run: npm test
-        
-      # Installs & runs ESLint to check for linting errors
-      - name: install the linter
+      - name: install node modules
+        run: npm ci
+      
+      #Runs test suites to check for testing errors  
+      - name: run test suites
+        run: npm test
+
+      #Installs ESLint
+      - name: install ESLint
         run: npm install eslint
-      - run: ./node_modules/.bin/eslint
+      
+      #Runs ESLint
+      - name: check for linting errors
+        run: ./node_modules/.bin/eslint
+  
+      #Deploy to Heroku by pushing to remote heroku git repo
+      - name: deploy app to heroku
+        run: git push https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ HEROKU_APP_NAME }}.git origin/master:master
+  
         
