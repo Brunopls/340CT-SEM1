@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  runTests:
+  Install Node Modules & Run Tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,28 +27,43 @@ jobs:
       - name: run test suites
         run: npm test
 
-      #Installs ESLint
-      - name: install ESLint
-        run: npm install eslint
+  Install & Run ESLint:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            node-version: [12.x]
+        steps:
+          - uses: actions/checkout@v2
+          - name: Use Node.js ${{ matrix.node-version }}
+            uses: actions/setup-node@v1
+            with:
+              node-version: ${{ matrix.node-version }}
+          #Installs ESLint
+          - name: install ESLint
+            run: npm install eslint
+
+          #Runs ESLint
+          - name: check for linting errors
+            run: ./node_modules/.bin/eslint
+
+  Deploy App to Heroku:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            node-version: [12.x]
+        steps:
+          - uses: actions/checkout@v2
+          - name: Use Node.js ${{ matrix.node-version }}
+            uses: actions/setup-node@v1
+            with:
+              node-version: ${{ matrix.node-version }}
+          #Deploys the app to Heroku
+          - name: deploy app to Heroku
+            env:
+              HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+              HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+            run: git push https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git origin/master:master
       
-      #Runs ESLint
-      - name: check for linting errors
-        run: ./node_modules/.bin/eslint
-  
-      #Installs ruby-dev toolchain 
-      - name: install ruby-dev toolchain
-        run: sudo apt install -y ruby-dev
-      
-      #Installs dpl gem which we'll use to deploy to Heroku
-      - name: install ruby-dev toolchain
-        run: sudo gem install dpl
-      
-      #Deploys the app to Heroku
-      - name: deploy app to Heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-        run: sudo dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=HEROKU_API_KEY
         
   
         
