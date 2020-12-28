@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  Install Node Modules & Run Tests:
+  installNodeModulesAndRunTests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,7 +27,7 @@ jobs:
       - name: run test suites
         run: npm test
 
-  Install & Run ESLint:
+  installAndRunESLint:
         runs-on: ubuntu-latest
         strategy:
           matrix:
@@ -46,7 +46,7 @@ jobs:
           - name: check for linting errors
             run: ./node_modules/.bin/eslint
 
-  Deploy App to Heroku:
+  deployToHeroku:
         runs-on: ubuntu-latest
         strategy:
           matrix:
