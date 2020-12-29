@@ -53,15 +53,16 @@ class OrderChoicesSides {
 	 */
 	async addSideDishChoice(body) {
 		try {
-		const sql =
+			const sql =
 		`INSERT INTO orderChoicesSides (choiceID, sideDishID, quantity, price, ingredientsCost)\
 					 VALUES(${body.choiceID},
 							${body.sideDishID}, 
 							${body.quantity}, 
 						   '${body.price}', 
 							${body.ingredientsCost});`
-		await this.db.run(sql)
-		return true} catch (err) {
+			await this.db.run(sql)
+			return true
+		} catch (err) {
 			return false
 		}
 	}

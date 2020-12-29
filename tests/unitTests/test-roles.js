@@ -24,7 +24,7 @@ test('ROLES : error if invalid role ID', async t => {
 test('ROLES : error if no records in table', async t => {
 	try {
 		const result = await t.context.roles.getRoles()
-		
+
 		t.is(result.length, 0, 'no records in table')
 	} catch (err) {
 		t.is(err.message, 'No records found in \'roles\'.\'', 'incorrect error message')

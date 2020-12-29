@@ -21,7 +21,7 @@ test.afterEach(t => {
 test('SIDE DISHES : true if records returned successfully', async t => {
 	try {
 		await t.context.sideDishes.addSideDish(t.context.mockSideDish)
-		
+
 		const result = await t.context.sideDishes.getSideDishes()
 
 		t.is(result.length === 1, true, 'retrieved successfully')

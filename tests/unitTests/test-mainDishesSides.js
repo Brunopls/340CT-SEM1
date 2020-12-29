@@ -1,4 +1,4 @@
-import test from 'ava'	
+import test from 'ava'
 import { MainDishSides } from '../../modules/mainDishSides.js'
 import { MainDishes } from '../../modules/mainDishes.js'
 import { SideDishes } from '../../modules/sideDishes.js'
@@ -17,7 +17,7 @@ test.beforeEach(async t => {
 		},
 		mockMainDishSide: {
 			mainDishID: 1,
-			sideDishID : 1,
+			sideDishID: 1,
 		}
 	}
 })
@@ -35,7 +35,7 @@ test('MAIN DISHES SIDES : true records retrieved', async t => {
 		await t.context.mainDishSides.addMainDishSide(t.context.mockMainDishSide)
 
 		const result = await t.context.mainDishSides.getMainDishSides(1)
-		
+
 		t.is(result.length, 1, 'successfully fetched records')
 	} catch (err) {
 		console.log(err)
