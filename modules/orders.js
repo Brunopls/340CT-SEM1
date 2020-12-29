@@ -43,7 +43,7 @@ class Orders {
 		let sql = 'SELECT * FROM orders WHERE statusCode!=3'
 		if(id) sql += ` AND statusCode=${id}`
 		const data = await this.db.all(sql)
-		if(data !== undefined) return data
+		if(data !== undefined && data.length > 0) return data
 		else throw new Error('No records found in \'orders\'.\'')
 	}
 
@@ -79,7 +79,7 @@ class Orders {
 			await this.db.run(sql)
 			return true
 		} catch(err) {
-			console.log(err)
+			return false
 		}
 	}
 
@@ -91,11 +91,12 @@ class Orders {
 	 */
 	async deleteOrder(id) {
 		try{
+			if(id === undefined) throw new Error
 			const sql = `DELETE FROM orders WHERE orderID=${id};`
 			await this.db.run(sql)
 			return true
 		} catch(err) {
-			console.log(err)
+			throw new Error('No matching id')
 		}
 	}
 

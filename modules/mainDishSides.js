@@ -43,7 +43,7 @@ class MainDishSides {
 	async getMainDishSides(id) {
 		const sql = `SELECT * FROM mainDishSides WHERE mainDishID = ${id};`
 		const data = await this.db.all(sql)
-		if(data !== undefined) return data
+		if(data !== undefined && data.length > 0) return data
 		else throw new Error('No matching id')
 	}
 

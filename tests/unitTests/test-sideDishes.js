@@ -42,3 +42,21 @@ test('SIDE DISHES : true if record returned successfully', async t => {
 		t.fail('Failed to retrieve records')
 	}
 })
+
+test('SIDE DISHES : error if record not retrieved', async t => {
+	try {
+		const result = await t.context.sideDishes.getSideDish(99)
+		if(result) t.fail('retrieved record')
+	} catch (err) {
+		t.is(err.message, 'No matching id', 'failed to retrieve record')
+	}
+})
+
+test('SIDE DISHES : error if records not retrieved', async t => {
+	try {
+		const result = await t.context.sideDishes.getSideDishes()
+		if(result) t.fail('retrieved records')
+	} catch (err) {
+		t.is(err.message, 'No records found in \'sideDishes\'.\'', 'failed to retrieve records')
+	}
+})

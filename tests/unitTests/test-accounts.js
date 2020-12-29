@@ -118,3 +118,13 @@ test('ROLE    : valid username', async t => {
 		t.fail('invalid role returned')
 	}
 })
+
+test('ROLE    : invalid username', async t => {
+	try {
+		const result = await t.context.account.getRoleID('test')
+
+		if(result) t.fail('retrieved record')
+	} catch(err) {
+		t.is(err.message, 'username "test" not found', 'failed to retrieve records')
+	}
+})
