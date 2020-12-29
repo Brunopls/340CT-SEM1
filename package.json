@@ -35,6 +35,7 @@
 	"author": "Bruno",
 	"license": "ISC",
 	"dependencies": {
+		"esm": "^3.2.25",
 		"bcrypt": "^5.0.0",
 		"bcrypt-promise": "^2.0.0",
 		"faker": "^5.1.0",
@@ -54,7 +55,6 @@
 		"dependency": "0.0.1",
 		"dependency-check": "^4.1.0",
 		"eslint": "^7.8.1",
-		"esm": "^3.2.25",
 		"jscpd": "^3.3.19",
 		"jsdoc": "^3.6.6",
 		"jsdoc-route-plugin": "^0.1.0",
