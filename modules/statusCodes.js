@@ -65,6 +65,22 @@ class StatusCodes {
 	}
 
 	/**
+	 * gets a single record from the 'statusCodes' table with matching status name.
+	 * @param {String} name role ID.
+	 * @returns {Object} returns object if records exist in table.
+	 * @memberof models/StatusCodes
+	 */
+	async addStatusCode(name) {
+		try {
+			const sql = `INSERT INTO statusCodes (name) VALUES ('${name}');`
+			await this.db.run(sql)
+			return true
+		} catch (err) {
+			return false
+		}
+	}	
+
+	/**
 	 * closes the connection to SQLite database
 	 * @memberof models/StatusCodes
 	 */

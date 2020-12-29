@@ -76,7 +76,7 @@ secureRouter.get('/orders', async ctx => {
 	const orders = await new Orders(dbName)
 	const statusHelper = await new StatusHelpers()
 	const WAITING_STAFF_ORDERS = 2
-	const KITCHEN_STAFF_ORDERS = 3
+	const KITCHEN_STAFF_ORDERS = 1
 	try {
 		let rows
 		if (ctx.hbs.role === 'waiting') rows = await orders.getOrders(WAITING_STAFF_ORDERS)

@@ -1,105 +1,120 @@
 import test from 'ava'
 import { Accounts } from '../../modules/accounts.js'
 
-test('REGISTER : register and log in with a valid account', async test => {
-	test.plan(1)
-	const account = await new Accounts() // no database specified so runs in-memory
-	const register = await account.register('doej', 'password', 'doej@gmail.com')
-	test.is(register, true, 'unable to register')
-	account.close()
-})
-
-test('REGISTER : register a duplicate username', async test => {
-	test.plan(1)
-	const account = await new Accounts()
-	try {
-		await account.register('doej', 'password', 'doej@gmail.com')
-		await account.register('doej', 'password', 'doej@gmail.com')
-		test.fail('error not thrown')
-	} catch(err) {
-		test.is(err.message, 'username "doej" already in use', 'incorrect error message')
-	} finally {
-		account.close()
+test.beforeEach(async t => {
+	t.context = {
+		account: await new Accounts()
 	}
 })
 
-test('REGISTER : error if blank username', async test => {
-	test.plan(1)
-	const account = await new Accounts()
+test.afterEach(t => {
+	t.context.account.close()
+})
+
+test('REGISTER : register and log in with a valid account', async t => {
 	try {
-		await account.register('', 'password', 'doej@gmail.com')
-		test.fail('error not thrown')
-	} catch(err) {
-		test.is(err.message, 'missing field', 'incorrect error message')
-	} finally {
-		account.close()
+		await t.context.account.register('test', 'test123', 'test@gmail.com')
+		const result = await t.context.account.login('test', 'test123')
+
+		t.is(result, true, 'registered successfully')
+	} catch (err) {
+		t.fail(err.message)
 	}
 })
 
-test('REGISTER : error if blank password', async test => {
-	test.plan(1)
-	const account = await new Accounts()
+test('REGISTER : register a duplicate username', async t => {
 	try {
-		await account.register('doej', '', 'doej@gmail.com')
-		test.fail('error not thrown')
+		await t.context.account.register('doej', 'password', 'doej@gmail.com')
+		await t.context.account.register('doej', 'password', 'doej@gmail.com')
+
+		t.fail('error not thrown')
 	} catch(err) {
-		test.is(err.message, 'missing field', 'incorrect error message')
-	} finally {
-		account.close()
+		t.is(err.message, 'username "doej" already in use', 'incorrect error message')
 	}
 })
 
-test('REGISTER : error if blank email', async test => {
-	test.plan(1)
-	const account = await new Accounts()
+test('REGISTER : error if blank username', async t => {
 	try {
-		await account.register('doej', 'password', '')
-		test.fail('error not thrown')
+		await t.context.account.register('', 'password', 'doej@gmail.com')
+
+		t.fail('error not thrown')
 	} catch(err) {
-		test.is(err.message, 'missing field', 'incorrect error message')
-	} finally {
-		account.close()
+		t.is(err.message, 'missing field', 'incorrect error message')
 	}
 })
 
-test('REGISTER : error if duplicate email', async test => {
-	test.plan(1)
-	const account = await new Accounts()
+test('REGISTER : error if blank password', async t => {
 	try {
-		await account.register('doej', 'password', 'doej@gmail.com')
-		await account.register('bloggsj', 'newpassword', 'doej@gmail.com')
-		test.fail('error not thrown')
+		await t.context.account.register('doej', '', 'doej@gmail.com')
+
+		t.fail('error not thrown')
 	} catch(err) {
-		test.is(err.message, 'email address "doej@gmail.com" is already in use', 'incorrect error message')
-	} finally {
-		account.close()
+		t.is(err.message, 'missing field', 'incorrect error message')
 	}
 })
 
-test('LOGIN    : invalid username', async test => {
-	test.plan(1)
-	const account = await new Accounts()
+test('REGISTER : error if blank email', async t => {
 	try {
-		await account.register('doej', 'password', 'doej@gmail.com')
-		await account.login('roej', 'password')
-		test.fail('error not thrown')
+		await t.context.account.register('doej', 'password', '')
+
+		t.fail('error not thrown')
 	} catch(err) {
-		test.is(err.message, 'username "roej" not found', 'incorrect error message')
-	} finally {
-		account.close()
+		t.is(err.message, 'missing field', 'incorrect error message')
 	}
 })
 
-test('LOGIN    : invalid password', async test => {
-	test.plan(1)
-	const account = await new Accounts()
+test('REGISTER : error if duplicate email', async t => {
 	try {
-		await account.register('doej', 'password', 'doej@gmail.com')
-		await account.login('doej', 'bad')
-		test.fail('error not thrown')
+		await t.context.account.register('doej', 'password', 'doej@gmail.com')
+		await t.context.account.register('bloggsj', 'newpassword', 'doej@gmail.com')
+
+		t.fail('error not thrown')
 	} catch(err) {
-		test.is(err.message, 'invalid password for account "doej"', 'incorrect error message')
-	} finally {
-		account.close()
+		t.is(err.message, 'email address "doej@gmail.com" is already in use', 'incorrect error message')
+	}
+})
+
+test('LOGIN    : valid user', async t => {
+	try {
+		await t.context.account.register('test', 'test123', 'test@gmail.com')
+		const result = await t.context.account.login('test', 'test123')
+
+		t.is(result, true, 'login successful')
+	} catch(err) {
+		t.fail('login failed')
+	}
+})
+
+test('LOGIN    : invalid username', async t => {
+	try {
+		await t.context.account.register('doej', 'password', 'doej@gmail.com')
+		await t.context.account.login('roej', 'password')
+
+		t.fail('error not thrown')
+	} catch(err) {
+		t.is(err.message, 'username "roej" not found', 'incorrect error message')
+	}
+})
+
+test('LOGIN    : invalid password', async t => {
+	try {
+		await t.context.account.register('doej', 'password', 'doej@gmail.com')
+		await t.context.account.login('doej', 'bad')
+
+		t.fail('error not thrown')
+	} catch(err) {
+		t.is(err.message, 'invalid password for account "doej"', 'incorrect error message')
+	}
+})
+
+test('ROLE    : valid username', async t => {
+	try {
+		await t.context.account.register('test', 'test123', 'test@gmail.com')
+
+		const result = await t.context.account.getRoleID('test')
+
+		t.is(result, 4, 'valid role returned')
+	} catch(err) {
+		t.fail('invalid role returned')
 	}
 })

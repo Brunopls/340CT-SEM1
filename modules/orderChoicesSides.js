@@ -39,7 +39,7 @@ class OrderChoicesSides {
 	 * @memberof models/OrderChoicesSides
 	 */
 	async getOrderChoiceSides(id) {
-		const sql = `SELECT * FROM orderChoicesSides WHERE orderID = ${id};`
+		const sql = `SELECT * FROM orderChoicesSides WHERE choiceID = ${id};`
 		const data = await this.db.all(sql)
 		if(data !== undefined) return data
 		else throw new Error('No matching id')
@@ -52,6 +52,7 @@ class OrderChoicesSides {
 	 * @memberof models/OrderChoicesSides
 	 */
 	async addSideDishChoice(body) {
+		try {
 		const sql =
 		`INSERT INTO orderChoicesSides (choiceID, sideDishID, quantity, price, ingredientsCost)\
 					 VALUES(${body.choiceID},
@@ -60,7 +61,17 @@ class OrderChoicesSides {
 						   '${body.price}', 
 							${body.ingredientsCost});`
 		await this.db.run(sql)
-		return true
+		return true} catch (err) {
+			return false
+		}
+	}
+
+	/**
+	 * closes the connection to SQLite database
+	 * @memberof models/OrderChoicesSides
+	 */
+	async close() {
+		await this.db.close()
 	}
 }
 
