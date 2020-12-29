@@ -41,7 +41,7 @@ class OrderChoicesSides {
 	async getOrderChoiceSides(id) {
 		const sql = `SELECT * FROM orderChoicesSides WHERE choiceID = ${id};`
 		const data = await this.db.all(sql)
-		if(data !== undefined) return data
+		if(data !== undefined && data.length > 0) return data
 		else throw new Error('No matching id')
 	}
 

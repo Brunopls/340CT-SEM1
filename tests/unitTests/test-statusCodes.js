@@ -56,3 +56,36 @@ test('STATUS CODES : true if records retrieved', async t => {
 		t.fail('failed to retrieve records')
 	}
 })
+
+test('STATUS CODES : false if record not added', async t => {
+	const result = await t.context.statusCodes.addStatusCode()
+
+	t.is(result, false, 'failed to add record')
+})
+
+test('STATUS CODES : false if status code not returned by name', async t => {
+	try {
+		const result = await t.context.statusCodes.getStatusCodeByName('test')
+		if(result) t.fail('retrieved record')
+	} catch (err) {
+		t.is(err.message, 'No matching id', 'failed to retrieve record')
+	}
+})
+
+test('STATUS CODES : false if status code not returned by ID', async t => {
+	try {
+		const result = await t.context.statusCodes.getStatusCode(99)
+		if(result) t.fail('retrieved record')
+	} catch (err) {
+		t.is(err.message, 'No matching id', 'failed to retrieve record')
+	}
+})
+
+test('STATUS CODES : false if status codes not retrieved', async t => {
+	try {
+		const result = await t.context.statusCodes.getStatusCodes()
+		if(result) t.fail('retrieved records')
+	} catch (err) {
+		t.is(err.message, 'No records found in \'statusCodes\'.\'', 'failed to retrieve records')
+	}
+})

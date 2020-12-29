@@ -79,3 +79,29 @@ test('ORDERS CHOICES : true if record deleted', async t => {
 		t.fail('failed to delete record')
 	}
 })
+
+test('ORDERS CHOICES : error if order choice not deleted', async t => {
+	try {
+		await t.context.orderChoices.deleteOrderChoices()
+
+		t.fail('error not thrown')
+	} catch (err) {
+		t.is(err.message, 'No matching id', 'incorrect error message')
+	}
+})
+
+test('ORDERS CHOICES : false if record not added', async t => {
+	const result = await t.context.orderChoices.addMainDishChoice()
+
+	t.is(result, false, 'failed to add record')
+})
+
+test('ORDERS CHOICES : error if invalid order ID', async t => {
+	try {
+		await t.context.orderChoices.getOrderChoice(99)
+
+		t.fail('error not thrown')
+	} catch (err) {
+		t.is(err.message, 'No matching id', 'incorrect error message')
+	}
+})

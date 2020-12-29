@@ -62,3 +62,22 @@ test('MAIN DISHES : true if record updated successfully', async t => {
 		t.fail('Failed to update record')
 	}
 })
+
+test('ORDERS : error if no records retrieved', async t => {
+	try {
+		const result = await t.context.mainDishes.getMainDishes()
+		if(result) t.fail('retrieved records')
+	} catch (err) {
+		t.is(err.message, 'No records found in \'mainDishes\'.\'', 'failed to retrieve records')
+	}
+})
+
+test('ORDERS : error if invalid order ID', async t => {
+	try {
+		await t.context.mainDishes.getMainDish(99)
+
+		t.fail('error not thrown')
+	} catch (err) {
+		t.is(err.message, 'No matching id', 'incorrect error message')
+	}
+})

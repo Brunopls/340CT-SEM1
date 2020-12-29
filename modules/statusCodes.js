@@ -34,7 +34,7 @@ class StatusCodes {
 	async getStatusCodes() {
 		const sql = 'SELECT * FROM statusCodes;'
 		const data = await this.db.all(sql)
-		if(data !== undefined) return data
+		if(data !== undefined && data.length > 0) return data
 		else throw new Error('No records found in \'statusCodes\'.\'')
 	}
 
@@ -72,6 +72,7 @@ class StatusCodes {
 	 */
 	async addStatusCode(name) {
 		try {
+			if(typeof name !== 'string') throw new Error('wrong data type!')
 			const sql = `INSERT INTO statusCodes (name) VALUES ('${name}');`
 			await this.db.run(sql)
 			return true

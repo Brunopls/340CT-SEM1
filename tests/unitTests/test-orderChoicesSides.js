@@ -82,3 +82,18 @@ test('ORDER CHOICES SIDES : true if records retrieved', async t => {
 		t.fail('failed to retrieve records')
 	}
 })
+
+test('ORDER CHOICES SIDES : error if no records retrieved', async t => {
+	try {
+		const result = await t.context.orderChoicesSides.getOrderChoiceSides(1)
+		if(result) t.fail('retrieved records')
+	} catch (err) {
+		t.is(err.message, 'No matching id', 'failed to retrieve records')
+	}
+})
+
+test('ORDER CHOICES SIDES : false if record not added', async t => {
+	const result = await t.context.orderChoicesSides.addSideDishChoice()
+
+	t.is(result, false, 'failed to add record')
+})
