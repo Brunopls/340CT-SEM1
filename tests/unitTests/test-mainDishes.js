@@ -56,7 +56,7 @@ test('MAIN DISHES : true if record updated successfully', async t => {
 		await t.context.mainDishes.addMainDish(t.context.mockDish)
 
 		const result = await t.context.mainDishes.updateDish(1, t.context.mockDish)
-		
+
 		t.is(result, true, 'updated successfully')
 	} catch (err) {
 		t.fail('Failed to update record')

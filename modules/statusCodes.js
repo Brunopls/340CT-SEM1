@@ -78,7 +78,7 @@ class StatusCodes {
 		} catch (err) {
 			return false
 		}
-	}	
+	}
 
 	/**
 	 * closes the connection to SQLite database

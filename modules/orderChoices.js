@@ -53,18 +53,18 @@ class OrderChoices {
 	 */
 	async addMainDishChoice(body) {
 		try {
-		const sql =
+			const sql =
 			`INSERT INTO orderChoices (mainDishID, orderID, quantity, price, ingredientsCost)\
 					 VALUES(${body.mainDishID},
 							${body.orderID},
 							${body.quantity}, 
 							${body.price}, 
 							${body.ingredientsCost});`
-		await this.db.run(sql)
-		return true
-	} catch(err) {
-		return false
-	}
+			await this.db.run(sql)
+			return true
+		} catch(err) {
+			return false
+		}
 	}
 
 	/**
@@ -75,9 +75,10 @@ class OrderChoices {
 	 */
 	async deleteOrderChoices(id) {
 		try {
-		const sql = `DELETE FROM orderChoices WHERE orderID=${id}`
-		await this.db.run(sql)
-		return true} catch(err) {
+			const sql = `DELETE FROM orderChoices WHERE orderID=${id}`
+			await this.db.run(sql)
+			return true
+		} catch(err) {
 			return false
 		}
 	}

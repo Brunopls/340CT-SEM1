@@ -13,8 +13,8 @@ test.afterEach(t => {
 
 test('STATUS CODES : true if record added', async t => {
 	try {
-        const result = await t.context.statusCodes.addStatusCode('test')
-        
+		const result = await t.context.statusCodes.addStatusCode('test')
+
 		t.is(result, true, 'successfully added record')
 	} catch (err) {
 		t.fail('failed to add record')
@@ -23,9 +23,9 @@ test('STATUS CODES : true if record added', async t => {
 
 test('STATUS CODES : true if record retrieved by ID', async t => {
 	try {
-        await t.context.statusCodes.addStatusCode('test')
+		await t.context.statusCodes.addStatusCode('test')
 
-        const result = await t.context.statusCodes.getStatusCode(1)
+		const result = await t.context.statusCodes.getStatusCode(1)
 
 		t.is(result.id, 1, 'successfully retrieved record')
 	} catch (err) {
@@ -35,9 +35,9 @@ test('STATUS CODES : true if record retrieved by ID', async t => {
 
 test('STATUS CODES : true if record retrieved by name', async t => {
 	try {
-        await t.context.statusCodes.addStatusCode('test')
+		await t.context.statusCodes.addStatusCode('test')
 
-        const result = await t.context.statusCodes.getStatusCodeByName('test')
+		const result = await t.context.statusCodes.getStatusCodeByName('test')
 
 		t.is(result.name, 'test', 'successfully retrieved record')
 	} catch (err) {
@@ -47,10 +47,10 @@ test('STATUS CODES : true if record retrieved by name', async t => {
 
 test('STATUS CODES : true if records retrieved', async t => {
 	try {
-        await t.context.statusCodes.addStatusCode('test')
+		await t.context.statusCodes.addStatusCode('test')
 
-        const result = await t.context.statusCodes.getStatusCodes()
-        
+		const result = await t.context.statusCodes.getStatusCodes()
+
 		t.is(result.length, 1, 'successfully retrieved records')
 	} catch (err) {
 		t.fail('failed to retrieve records')

@@ -22,7 +22,7 @@ test.afterEach(t => {
 test('ORDERS : true records retrieved', async t => {
 	try {
 		await t.context.orders.addOrder(t.context.mockOrder)
-		
+
 		const result = await t.context.orders.getOrders()
 
 		t.is(result.length, 1, 'successfully fetched records')
