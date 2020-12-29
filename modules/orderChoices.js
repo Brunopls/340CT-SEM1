@@ -41,7 +41,7 @@ class OrderChoices {
 	async getOrderChoice(id) {
 		const sql = `SELECT * FROM orderChoices WHERE orderID = ${id};`
 		const data = await this.db.all(sql)
-		if(data !== undefined) return data
+		if(data !== undefined && data.length > 0) return data
 		else throw new Error('No matching id')
 	}
 
@@ -75,11 +75,12 @@ class OrderChoices {
 	 */
 	async deleteOrderChoices(id) {
 		try {
+			if(id === undefined) throw new Error
 			const sql = `DELETE FROM orderChoices WHERE orderID=${id}`
 			await this.db.run(sql)
 			return true
 		} catch(err) {
-			return false
+			throw new Error('No matching id')
 		}
 	}
 

@@ -31,7 +31,7 @@ class Roles {
 	async getRoles() {
 		const sql = 'SELECT * FROM roles;'
 		const data = await this.db.all(sql)
-		if(data !== undefined) return data
+		if(data !== undefined && data.length > 0) return data
 		else throw new Error('No records found in \'roles\'.\'')
 	}
 

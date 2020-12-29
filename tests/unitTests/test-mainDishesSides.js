@@ -42,3 +42,12 @@ test('MAIN DISHES SIDES : true records retrieved', async t => {
 		t.fail('failed to fetch records')
 	}
 })
+
+test('MAIN DISHES SIDES : error if no records retrieved', async t => {
+	try {
+		const result = await t.context.mainDishSides.getMainDishSides(1)
+		if(result) t.fail('retrieved records')
+	} catch (err) {
+		t.is(err.message, 'No matching id', 'failed to retrieve records')
+	}
+})
