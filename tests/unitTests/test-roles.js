@@ -1,15 +1,32 @@
 import test from 'ava'
 import { Roles } from '../../modules/roles.js'
 
-test('ROLES : error if invalid role ID', async test => {
-	test.plan(1)
-	const role = await new Roles('test-website.db')
+test.beforeEach(async t => {
+	t.context = {
+		roles: await new Roles(),
+	}
+})
+
+test.afterEach(t => {
+	t.context.roles.close()
+})
+
+test('ROLES : error if invalid role ID', async t => {
 	try {
-		await role.getRole(99)
-		test.fail('error not thrown')
+		await t.context.roles.getRole(99)
+
+		t.fail('error not thrown')
 	} catch (err) {
-		test.is(err.message, 'No matching id', 'incorrect error message')
-	} finally {
-		role.close()
+		t.is(err.message, 'No matching id', 'incorrect error message')
+	}
+})
+
+test('ROLES : error if no records in table', async t => {
+	try {
+		const result = await t.context.roles.getRoles()
+		
+		t.is(result.length, 0, 'no records in table')
+	} catch (err) {
+		t.is(err.message, 'No records found in \'roles\'.\'', 'incorrect error message')
 	}
 })

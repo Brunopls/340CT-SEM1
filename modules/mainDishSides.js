@@ -53,16 +53,21 @@ class MainDishSides {
 	 * @returns {Object} returns new Orders object.
 	 * @memberof models/MainDishSides
 	 */
-	async addMainDishChoice(body) {
-		const sql = `INSERT INTO mainDishSides (mainDishID, orderID, quantity, price, ingredientsCost)\
+	async addMainDishSide(body) {
+		const sql = `INSERT INTO mainDishSides (mainDishID, sideDishID)\
 					 VALUES(${body.mainDishID}, 
-							${body.orderID}, 
-							${body.quantity}, 
-							'${body.price}', 
-							${body.ingredientsCost}
+							${body.sideDishID}
 							);`
 		await this.db.run(sql)
 		return true
+	}
+
+	/**
+	 * closes the connection to SQLite database
+	 * @memberof models/MainDishSides
+	 */
+	async close() {
+		await this.db.close()
 	}
 }
 

@@ -52,6 +52,7 @@ class OrderChoices {
 	 * @memberof models/OrderChoices
 	 */
 	async addMainDishChoice(body) {
+		try {
 		const sql =
 			`INSERT INTO orderChoices (mainDishID, orderID, quantity, price, ingredientsCost)\
 					 VALUES(${body.mainDishID},
@@ -61,6 +62,9 @@ class OrderChoices {
 							${body.ingredientsCost});`
 		await this.db.run(sql)
 		return true
+	} catch(err) {
+		return false
+	}
 	}
 
 	/**
@@ -70,9 +74,20 @@ class OrderChoices {
 	 * @memberof models/OrderChoices
 	 */
 	async deleteOrderChoices(id) {
+		try {
 		const sql = `DELETE FROM orderChoices WHERE orderID=${id}`
 		await this.db.run(sql)
-		return true
+		return true} catch(err) {
+			return false
+		}
+	}
+
+	/**
+	 * closes the connection to SQLite database
+	 * @memberof models/OrderChoices
+	 */
+	async close() {
+		await this.db.close()
 	}
 }
 
