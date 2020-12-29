@@ -35,7 +35,7 @@ class Orders {
 	}
 
 	/**
-	 * gets all records in the 'roles' table.
+	 * gets all records in the 'orders' table.
 	 * @returns {Object} returns object if records exist in table.
 	 * @memberof models/Orders
 	 */
@@ -48,8 +48,8 @@ class Orders {
 	}
 
 	/**
-	 * gets a single record from the 'roles' table with matching role ID.
-	 * @param {Integer} the role ID.
+	 * gets a single record from the 'orders' table with matching order ID.
+	 * @param {Integer} the order ID.
 	 * @returns {Object} returns object if records exist in table.
 	 * @memberof models/Orders
 	 */
@@ -76,8 +76,8 @@ class Orders {
 						   '${body.time}', 
 							${body.totalPrice}, 
 							${body.totalIngredientsCost});`
-
-			return await this.db.run(sql)
+			await this.db.run(sql)
+			return true
 		} catch(err) {
 			console.log(err)
 		}
@@ -92,7 +92,8 @@ class Orders {
 	async deleteOrder(id) {
 		try{
 			const sql = `DELETE FROM orders WHERE orderID=${id};`
-			return await this.db.run(sql)
+			await this.db.run(sql)
+			return true
 		} catch(err) {
 			console.log(err)
 		}

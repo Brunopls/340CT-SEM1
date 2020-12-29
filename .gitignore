@@ -2,8 +2,10 @@
 .DS_Store
 node_modules/
 coverage/
+.nyc_output/
 screenshots/*
 docs/
+.github/
 
 data/
 coverage/

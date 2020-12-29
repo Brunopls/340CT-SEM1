@@ -52,15 +52,19 @@ class OrderChoices {
 	 * @memberof models/OrderChoices
 	 */
 	async addMainDishChoice(body) {
-		const sql =
+		try {
+			const sql =
 			`INSERT INTO orderChoices (mainDishID, orderID, quantity, price, ingredientsCost)\
 					 VALUES(${body.mainDishID},
 							${body.orderID},
 							${body.quantity}, 
 							${body.price}, 
 							${body.ingredientsCost});`
-		await this.db.run(sql)
-		return true
+			await this.db.run(sql)
+			return true
+		} catch(err) {
+			return false
+		}
 	}
 
 	/**
@@ -70,9 +74,21 @@ class OrderChoices {
 	 * @memberof models/OrderChoices
 	 */
 	async deleteOrderChoices(id) {
-		const sql = `DELETE FROM orderChoices WHERE orderID=${id}`
-		await this.db.run(sql)
-		return true
+		try {
+			const sql = `DELETE FROM orderChoices WHERE orderID=${id}`
+			await this.db.run(sql)
+			return true
+		} catch(err) {
+			return false
+		}
+	}
+
+	/**
+	 * closes the connection to SQLite database
+	 * @memberof models/OrderChoices
+	 */
+	async close() {
+		await this.db.close()
 	}
 }
 
