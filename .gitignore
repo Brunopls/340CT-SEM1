@@ -1,11 +1,13 @@
-
 .DS_Store
 node_modules/
+coverage/
+.nyc_output/
 screenshots/*
 docs/
 .github/
 
 data/
+coverage/
 sessions/
 screenshots/
 __image_snapshots_/
